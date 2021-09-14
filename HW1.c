@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_PAS_LENGTH 500
 #define PUSH(stack, sp, value) stack[sp] = value
@@ -9,9 +10,9 @@ typedef struct Instruction Instruction;
 struct Instruction {
 	int OP, // Opcode
 	L, // Lexicographical level
-	M, // Depends on the operator
-	lineNumber; // Line number of instruction from the input file
-	char* opName; // name of opcode
+	M,
+	linecount;
+	char opName[3]; // name of opcode
 };
 
 // Function Declarations
@@ -64,30 +65,39 @@ int main() {
 		IR.OP = pas[PC];
 		IR.L = pas[PC+1];
 		IR.M = pas[PC+2];
-		IR.lineNumber = PC%3;
+		IR.linecount = PC/3;
+		printf("%d\n", IR.OP);
 		switch (IR.OP) {
 			case 1: // lit
-				IR.opName = "lit";
+				strcpy(IR.opName, "lit");
+				break;
 			case 2: // opr
-				IR.opName = "opr";
+				strcpy(IR.opName, "opr");
+				break;
 			case 3: // lod
-				IR.opName = "lod";
+				strcpy(IR.opName, "lod");
+				break;
 			case 4: // sto
-				IR.opName = "sto";
+				strcpy(IR.opName, "sto");
+				break;
 			case 5: // cal
-				IR.opName = "cal";
+				strcpy(IR.opName, "cal");
+				break;
 			case 6: // inc
-				IR.opName = "inc";
+				strcpy(IR.opName, "inc");
+				break;
 			case 7: // jmp
-				IR.opName = "jmp";
+				strcpy(IR.opName, "jmp");
+				break;
 			case 8: // jpc
-				IR.opName = "jpc"; 
+				strcpy(IR.opName, "jpc"); 
+				break;
 			case 9: // sio
-				IR.opName = "sio";
+				strcpy(IR.opName, "sys");
+				break;
 			default:
 				break;
 		}
-
 		
 
 		// Execute
@@ -305,8 +315,8 @@ int main() {
 				break;
 		}
 
-		print_execution(PC/3, &IR, PC, BP, SP, DP, pas, GP);
-		
+		print_execution(IR.linecount, &IR, PC, BP, SP, DP, pas, GP);
+
 		PC+=3; // Increase the Program Counter
 	}	
 
