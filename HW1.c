@@ -16,7 +16,7 @@ struct Instruction {
 
 // Function Declarations
 int base(int L, int BP, int pas[]);
-
+void print_execution(int line, Instruction *IR, int PC, int BP, int SP, int DP, int *pas, int GP);
 
 int main() {
 	FILE * input = fopen("input.txt", "r");
@@ -88,7 +88,7 @@ int main() {
 				break;
 		}
 
-		PC+=3; // Increase the Program Counter
+		
 
 		// Execute
 		switch (IR.OP) {
@@ -293,11 +293,9 @@ int main() {
 						if(BP==GP){
 							DP = DP + 1;
 							//scanf("%d", &pas[DP]);
-							printf("scanf is cringe");
 						}else{
 							SP = SP - 1;
-							//ddddddscanf("%d", &pas[SP]);
-							printf("scanf is cringe");
+							//scanf("%d", &pas[SP]);
 						}
 						break;
 					case 3:
@@ -307,7 +305,9 @@ int main() {
 				break;
 		}
 
+		print_execution(PC/3, &IR, PC, BP, SP, DP, pas, GP);
 		
+		PC+=3; // Increase the Program Counter
 	}	
 
 
@@ -315,10 +315,10 @@ int main() {
 	return 0;
 }
 
-void print_execution(int line, Instruction IR, int PC, int BP, int SP, int DP, int *pas, int GP){
+void print_execution(int line, Instruction *IR, int PC, int BP, int SP, int DP, int *pas, int GP){
 	int i;
 	//print out instruction and registers
-	printf("%2d\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t", line, IR.opName, IR.L, IR.M, PC, BP, SP, DP);
+	printf("%2d\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t", line, IR->opName, IR->L, IR->M, PC, BP, SP, DP);
 
 	//print data
 	for(i=GP;i<=DP;i++){
