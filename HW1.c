@@ -343,6 +343,24 @@ int main() {
 	return 0;
 }
 
+void print_execution(int line, Instruction IR, int PC, int BP, int SP, int DP, int *pas, int GP){
+	int i;
+	//print out instruction and registers
+	printf("%2d\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t", line, IR.opName, IR.L, IR.M, PC, BP, SP, DP);
+
+	//print data
+	for(i=GP;i<=DP;i++){
+		printf("%d ", pas[i]);
+	}
+	printf("\n");
+	
+	//print stack
+	printf("\tstack : ");
+	for(i=MAX_PAS_LENGTH-1;i>=SP;i--){
+		printf("%d ", pas[i]);
+	}
+	printf("\n");
+}
 
 
 int base(int L, int BP, int pas[]) {
