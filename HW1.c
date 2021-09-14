@@ -302,7 +302,7 @@ int main() {
 							printf("scanf is cringe");
 						}else{
 							SP = SP - 1;
-							//scanf("%d", &pas[SP]);
+							//ddddddscanf("%d", &pas[SP]);
 							printf("scanf is cringe");
 						}
 						break;
