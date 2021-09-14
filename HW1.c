@@ -20,7 +20,6 @@ int base(int L, int BP, int pas[]);
 
 int main() {
 	FILE * input = fopen("input.txt", "r");
-	FILE * output = fopen("output.txt", "w");
 	int pas [MAX_PAS_LENGTH];
 	for (int i = 0; i < MAX_PAS_LENGTH; i++){
 		pas[i] = 0;
@@ -56,14 +55,9 @@ int main() {
 	// Close input file
 	fclose(input);
 
-	fprintf(output, "Line	OP    L    M\n");
 	
-	for (int i = 0; i < numLines; i+=3) {
-		fprintf(output, "%d   	%s    %d    %d\n", i/3, IR.opName, pas[i+1], pas[i+2]);
-	}
-	
-	fprintf(output, "\n                 PC    BP    SP	DP 	data\n");
-	fprintf(output, "Initial values         %d     %d     %d	%d		\n", PC, BP, SP, DP);
+	printf("\n                 PC    BP    SP	DP 	data\n");
+	printf("Initial values         %d     %d     %d	%d		\n", PC, BP, SP, DP);
 
 	while (!Halt) {
 		// Fetch
@@ -313,31 +307,9 @@ int main() {
 				break;
 		}
 
-		fprintf(output, "%d	%s	%d	%d	%d	%d	%d	%d", IR.lineNumber, IR.opName, IR.L, IR.M, PC, BP, SP, DP);
-		/*
-		if (!Halt) { // If the program is ended the stack should not be printed
-			if (numActivationRecords > 1){
-                for (int i = 1; i < numActivationRecords; i++) {
-					for (int j = base(i, BP, pas); j >= SP; j--) {
-						fprintf(output, "%d ", pas[j]);
-					}
-
-					// Was never able to get the "|" to
-				 // to be printed in the correct spot
-				}
-			}else{
-				for (int j = BP; j >= SP; j--) {
-					fprintf(output, "%d ", pas[j]);
-				}
-			}
-		}
-		*/
-
-		fprintf(output, "\n");
+		
 	}	
 
-	//Closes output file
-	fclose(output);
 
 
 	return 0;
