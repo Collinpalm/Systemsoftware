@@ -35,10 +35,7 @@ int main(int argc, char **argv) {
 
 	int Halt = 0, PC = 0, SP = 0, BP = 0, IC = 0, DP = 0, GP = 0, FREE = 0;
 	int numLines; 	// Holds how many lines there are in the file
-	int numActivationRecords = 1;	// Variable to manage the printing of the stack
-									// by keeping track of how many activation records
-								 	// are open
-
+	
 	Instruction IR;
 
 	IC = -3;
