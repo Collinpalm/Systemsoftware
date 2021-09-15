@@ -11,7 +11,6 @@ PROFESSOR= EURIPIDES MONTAGNE
 #include <string.h>
 
 #define MAX_PAS_LENGTH 500
-#define PUSH(stack, sp, value) stack[sp] = value
 
 typedef struct Instruction Instruction;
 
@@ -61,7 +60,7 @@ int main(int argc, char **argv) {
 	// Close input file
 	fclose(input);
 
-	
+	//set up boilerplate output
 	printf("\n            \t\tPC\tBP\tSP\tDP\tdata\n");
 	printf("Initial values\t\t%d\t%d\t%d\t%d		\n", PC, BP, SP, DP);
 	
@@ -281,8 +280,7 @@ int main(int argc, char **argv) {
 						break;
 				}
 				break;
-			case 3: // LOD L, M Load value to top of the stack from the stack location at offset M
-					// from L lexicographical levels down
+			case 3: // LOD 
 				if(BP==GP){
 					DP = DP+1;
 					pas[DP] = pas[GP+IR.M];
@@ -297,8 +295,7 @@ int main(int argc, char **argv) {
 					}
 				}
 				break;
-			case 4: // STO L, M Store value at top of the stack at
-					// offset M from L lexicographical levels down
+			case 4: // STO 
 				if(BP==GP){
 					pas[GP+IR.M] = pas[DP];
 					DP = DP-1;
@@ -313,24 +310,24 @@ int main(int argc, char **argv) {
 					}
 				}
 				break;
-			case 5: // CAL L, M Call procedure at code index M (generates new Activation Record)
+			case 5: // CAL 
 				pas[SP-1] = base(IR.L, BP, pas);
 				pas[SP-2] = BP;
 				pas[SP-3] = PC;
 				BP = SP - 1;
 				PC = IR.M;
 				break;
-			case 6: // INC 0, M Allocate M locals (increment sp by M)
+			case 6: // INC 
 				if(BP == GP){
 					DP = DP + IR.M;
 				}else{
 					SP = SP - IR.M;
 				}
 				break;
-			case 7: // JMP 0, M Jump to instruction M
+			case 7: // JMP 
 				PC = IR.M;
 				break;
-			case 8: // JPC Jump to instruction M if top stack element is 0
+			case 8: // JPC
 				if(BP==GP){
 					if(pas[DP] == 0){
 						PC = IR.M;
@@ -343,7 +340,7 @@ int main(int argc, char **argv) {
 					SP = SP+1;
 				}
 				break;
-			case 9: // SIO 0, 1 Write the top stack element to the screen
+			case 9: // SIO 
 				switch(IR.M){
 					case 1:
 						if(BP==GP){
@@ -371,7 +368,7 @@ int main(int argc, char **argv) {
 				}
 				break;
 		}
-
+		//print function
 		print_execution(IR.linecount, &IR, PC, BP, SP, DP, pas, GP);
 
 		
