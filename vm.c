@@ -1,3 +1,11 @@
+/*
+Collin Palm and Ayden Rebhan
+
+COP 3402 
+FALL 2021 UCF
+PROFESSOR= EURIPIDES MONTAGNE
+
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
