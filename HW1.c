@@ -19,8 +19,8 @@ struct Instruction {
 int base(int L, int BP, int pas[]);
 void print_execution(int line, Instruction *IR, int PC, int BP, int SP, int DP, int *pas, int GP);
 
-int main() {
-	FILE * input = fopen("input.txt", "r");
+int main(int argc, char **argv) {
+	FILE * input = fopen(argv[1], "r");
 	int pas [MAX_PAS_LENGTH];
 	for (int i = 0; i < MAX_PAS_LENGTH; i++){
 		pas[i] = 0;
@@ -34,17 +34,14 @@ int main() {
 
 	Instruction IR;
 
-
+	IC = -3;
 	// Read in the information from the file into mem
-	for (; IC < MAX_PAS_LENGTH; IC+=3) {
-		fscanf(input,"%d %d %d", &(pas[IC]), &(pas[IC+1]), &(pas[IC+2]));
 
-		if (feof(input)) {
-			numLines = IC;
-			break;
-		}
+	while(!feof(input)) {
+		IC +=3;
+		fscanf(input,"%d %d %d", &(pas[IC]), &(pas[IC+1]), &(pas[IC+2]));
 	}
-	IC -= 3;
+	IC += 3;
 	//set up the process address space
 	GP = IC;
 	DP = IC-1;
@@ -57,22 +54,65 @@ int main() {
 	fclose(input);
 
 	
-	printf("\n                 PC    BP    SP	DP 	data\n");
-	printf("Initial values         %d     %d     %d	%d		\n", PC, BP, SP, DP);
-
-	while (!Halt) {
+	printf("\n            \t\tPC\tBP\tSP\tDP\tdata\n");
+	printf("Initial values\t\t%d\t%d\t%d\t%d		\n", PC, BP, SP, DP);
+	
+	while (Halt == 0) {
+		
 		// Fetch
 		IR.OP = pas[PC];
 		IR.L = pas[PC+1];
 		IR.M = pas[PC+2];
 		IR.linecount = PC/3;
-		printf("%d\n", IR.OP);
 		switch (IR.OP) {
 			case 1: // lit
 				strcpy(IR.opName, "lit");
 				break;
 			case 2: // opr
-				strcpy(IR.opName, "opr");
+				switch(IR.M){
+					case 0:
+						strcpy(IR.opName, "rtn");
+						break;
+					case 1:
+						strcpy(IR.opName, "neg");
+						break;
+					case 2:
+						strcpy(IR.opName, "add");
+						break;
+					case 3:
+						strcpy(IR.opName, "sub");
+						break;
+					case 4:
+						strcpy(IR.opName, "mul");
+						break;
+					case 5:
+						strcpy(IR.opName, "div");
+						break;
+					case 6:
+						strcpy(IR.opName, "odd");
+						break;
+					case 7:
+						strcpy(IR.opName, "mod");
+						break;
+					case 8:
+						strcpy(IR.opName, "eql");
+						break;
+					case 9:
+						strcpy(IR.opName, "neq");
+						break;
+					case 10:
+						strcpy(IR.opName, "lss");
+						break;
+					case 11:
+						strcpy(IR.opName, "leq");
+						break;
+					case 12:
+						strcpy(IR.opName, "gtr");
+						break;
+					case 13:
+						strcpy(IR.opName, "geq");
+						break;
+				}
 				break;
 			case 3: // lod
 				strcpy(IR.opName, "lod");
@@ -98,7 +138,7 @@ int main() {
 			default:
 				break;
 		}
-		
+		PC+=3; // Increase the Program Counter
 
 		// Execute
 		switch (IR.OP) {
@@ -106,6 +146,9 @@ int main() {
 				if(BP == GP){
 					DP++;
 					pas[DP] = IR.M;
+				}else{
+					SP = SP - 1;
+					pas[SP] = IR.M;
 				}
 				break;
 			case 2: // OPR 0, M Operation to be performed on the data at the top of the stack
@@ -145,7 +188,7 @@ int main() {
 							DP = DP-1;
 							pas[DP] = pas[DP] * pas[DP+1];
 						}else{
-							SP = SP+2;
+							SP = SP+1;
 							pas[SP] = pas[SP] * pas[SP-1];
 						}
 						break;
@@ -154,7 +197,7 @@ int main() {
 							DP = DP-1;
 							pas[DP] = pas[DP] / pas[DP+1];
 						}else{
-							SP = SP+2;
+							SP = SP+1;
 							pas[SP] = pas[SP] / pas[SP-1];
 						}
 						break;
@@ -170,7 +213,7 @@ int main() {
 							DP = DP-1;
 							pas[DP] = pas[DP] % pas[DP+1];
 						}else{
-							SP = SP+2;
+							SP = SP+1;
 							pas[SP] = pas[SP] % pas[SP-1];
 						}
 						break;
@@ -179,7 +222,7 @@ int main() {
 							DP = DP-1;
 							pas[DP] = pas[DP] == pas[DP+1];
 						}else{
-							SP = SP+2;
+							SP = SP+1;
 							pas[SP] = pas[SP] == pas[SP-1];
 						}
 						break;
@@ -188,39 +231,43 @@ int main() {
 							DP = DP-1;
 							pas[DP] = pas[DP] != pas[DP+1];
 						}else{
-							SP = SP+2;
+							SP = SP+1;
 							pas[SP] = pas[SP] != pas[SP-1];
 						}
+						break;
 					case 10: // LSS
 						if(BP==GP){
 							DP = DP-1;
 							pas[DP] = pas[DP] < pas[DP+1];
 						}else{
-							SP = SP+2;
+							SP = SP+1;
 							pas[SP] = pas[SP] < pas[SP-1];
 						}
+						break;
 					case 11: // LEQ
 						if(BP==GP){
 							DP = DP-1;
 							pas[DP] = pas[DP] <= pas[DP+1];
 						}else{
-							SP = SP+2;
+							SP = SP+1;
 							pas[SP] = pas[SP] <= pas[SP-1];
 						}
+						break;
 					case 12: // GTR
 						if(BP==GP){
 							DP = DP-1;
 							pas[DP] = pas[DP] > pas[DP+1];
 						}else{
-							SP = SP+2;
+							SP = SP+1;
 							pas[SP] = pas[SP] > pas[SP-1];
 						}
+						break;
 					case 13: //GEQ
 						if(BP==GP){
 							DP = DP-1;
 							pas[DP] = pas[DP] >= pas[DP+1];
 						}else{
-							SP = SP+2;
+							SP = SP+1;
 							pas[SP] = pas[SP] >= pas[SP-1];
 						}
 						break;
@@ -251,7 +298,7 @@ int main() {
 					int ba = base(IR.L, BP, pas);
 					if(ba==GP){
 						pas[GP+IR.M] = pas[SP];
-						SP = SP - 1;
+						SP = SP + 1;
 					}else{
 						pas[ba - IR.M] = pas[SP];
 						SP = SP + 1;
@@ -292,20 +339,22 @@ int main() {
 				switch(IR.M){
 					case 1:
 						if(BP==GP){
-							printf("%d", pas[DP]);
+							printf("Top of Stack Value: %d\n", pas[DP]);
 							DP = DP - 1;
 						}else{
-							printf("%d", pas[SP]);
+							printf("Top of Stack Value: %d\n", pas[SP]);
 							SP = SP + 1;
 						}
 						break;
 					case 2:
 						if(BP==GP){
 							DP = DP + 1;
-							//scanf("%d", &pas[DP]);
+							printf("Please Enter an Integer: ");
+							scanf("%d", &pas[DP]);
 						}else{
 							SP = SP - 1;
-							//scanf("%d", &pas[SP]);
+							printf("Please Enter an Integer: ");
+							scanf("%d", &pas[SP]);
 						}
 						break;
 					case 3:
@@ -317,7 +366,7 @@ int main() {
 
 		print_execution(IR.linecount, &IR, PC, BP, SP, DP, pas, GP);
 
-		PC+=3; // Increase the Program Counter
+		
 	}	
 
 
@@ -346,12 +395,12 @@ void print_execution(int line, Instruction *IR, int PC, int BP, int SP, int DP, 
 
 
 int base(int L, int BP, int pas[]) {
-	int b1 = BP;
+	int arb = BP;
 
 	while (L > 0) {
-		b1 = pas[b1];
+		arb = pas[arb];
 		L--;
 	}
 
-	return b1;
+	return arb;
 }
