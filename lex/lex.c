@@ -21,12 +21,168 @@
 
 lexeme *list;
 int lex_index;
+int count;
 
 void printlexerror(int type);
 void printtokens();
+char* wordRunner(char *input);
+void wordcheck(char* input)
+
+char* wordRunner(char *input){
+	int wordlen = 0;
+	int wcount = count;
+	while(isalpha(input[wcount])){
+		wordlen++;
+		wcount++;
+	}
+	char *word[wordlen];
+	word[wordlen] = '\0';
+	for(int i = 0; i < wordlen; i++){
+		word[i] = input[count+i]; 
+	}
+	return word;
+}
+
+void wordcheck(char *input){
+	char* word = wordRunner(input);
+	if(strcmp(word, "const")){
+		list[lex_index].type = constsym;
+		lex_index++;
+	}else if(strcmp(word, "var")){
+		list[lex_index].type = varsym;
+		lex_index++;
+	}else if(strcmp(word, "procedure")){
+		list[lex_index].type = procsym;
+		lex_index++;
+	}else if(strcmp(word, "begin")){
+		list[lex_index].type = beginsym;
+		lex_index++;
+	}else if(strcmp(word, "end")){
+		list[lex_index].type = endsym;
+		lex_index++;
+	}else if(strcmp(word, "while")){
+		list[lex_index].type = whilesym;
+		lex_index++;
+	}else if(strcmp(word, "do")){
+		list[lex_index].type = dosym;
+		lex_index++;
+	}else if(strcmp(word, "if")){
+		list[lex_index].type = ifsym;
+		lex_index++;
+	}else if(strcmp(word, "then")){
+		list[lex_index].type = thensym;
+		lex_index++;
+	}else if(strcmp(word, "else")){
+		list[lex_index].type = elsesym;
+		lex_index++;
+	}else if(strcmp(word, "call")){
+		list[lex_index].type = callsym;
+		lex_index++;
+	}else if(strcmp(word, "write")){
+		list[lex_index].type = writesym;
+		lex_index++;
+	}else if(strcmp(word, "read")){
+		list[lex_index].type = readsym;
+		lex_index++;
+	}else if(strcmp(word, "odd")){
+		list[lex_index].type = oddsym;
+		lex_index++;
+	}
+
+}
 
 
 lexeme *lexanalyzer(char *input){
+	lex_index = 0;
+	count = 0;
+	while(input[count] != '\0'){
+		switch(input[count]){
+			case ';':
+				list[lex_index].type = semicolonsym;
+				lex_index++;
+				break;
+			case '.':
+				list[lex_index].type = periodsym;
+				lex_index++;
+				break;
+			case ',':
+				list[lex_index].type = commasym;
+				lex_index++;
+				break;
+			case ')':
+				list[lex_index].type = rparensym;
+				lex_index++;
+				break;
+			case '(':
+				list[lex_index].type = lparensym;
+				lex_index++;
+				break;
+			case '>':
+				if(input[count+1] == '='){
+					list[lex_index].type = geqsym;
+					lex_index++;
+					count++;
+				}else{
+					list[lex_index].type = gtrsym;
+					lex_index++;
+				}
+				break;
+			case '<':
+				if(input[count+1] == '='){
+					list[lex_index].type = leqsym;
+					lex_index++;
+					count++;
+				}else{
+					list[lex_index].type = lsssym;
+					lex_index++;
+				}
+				break;
+			case '!':
+				if(input[count+1] == '='){
+					list[lex_index].type = leqsym;
+					lex_index++;
+					count++;
+				}
+				break;
+			case '=':
+				if(input[count+1] == '='){
+					list[lex_index].type = leqsym;
+					lex_index++;
+					count++;
+				}
+				break;
+			case '%':
+				list[lex_index].type = modsym;
+				lex_index++;
+				break;
+			case '/':
+				list[lex_index].type = divsym;
+				lex_index++;
+				break;
+			case '*':
+				list[lex_index].type = multsym;
+				lex_index++;
+				break;
+			case '-':
+				list[lex_index].type = subsym;
+				lex_index++;
+				break;
+			case '+':
+				list[lex_index].type = addsym;
+				lex_index++;
+				break;
+			case ':':
+				if(input[count+1] == '='){
+					list[lex_index].type = leqsym;
+					lex_index++;
+					count++;
+				}
+				break;
+		}
+	}
+	
+	
+	
 	return NULL;
 }
 
