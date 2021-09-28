@@ -26,8 +26,7 @@ void printlexerror(int type);
 void printtokens();
 
 
-lexeme *lexanalyzer(char *input)
-{
+lexeme *lexanalyzer(char *input){
 	return NULL;
 }
 
