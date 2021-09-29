@@ -28,6 +28,42 @@ void printtokens();
 char* wordRunner(char *input);
 void wordcheck(char* input);
 void cutwhite(char* input);
+int checkvalid(char* word);
+
+//checks if a word is not reserved
+int checkvalid(char* word){
+	if(strcmp(word, "const")){
+		return 1;
+	}else if(strcmp(word, "var")){
+		return 1;
+	}else if(strcmp(word, "procedure")){
+		return 1;
+	}else if(strcmp(word, "begin")){
+		return 1;
+	}else if(strcmp(word, "end")){
+		return 1;
+	}else if(strcmp(word, "while")){
+		return 1;
+	}else if(strcmp(word, "do")){
+		return 1;
+	}else if(strcmp(word, "if")){
+		return 1;
+	}else if(strcmp(word, "then")){
+		return 1;
+	}else if(strcmp(word, "else")){
+		return 1;
+	}else if(strcmp(word, "call")){
+		return 1;
+	}else if(strcmp(word, "write")){
+		return 1;
+	}else if(strcmp(word, "read")){
+		return 1;
+	}else if(strcmp(word, "odd")){
+		return 1;
+	}
+	return 0;
+}
+
 //cuts out whitespaces
 void cutwhite(char* input){
 	while(input[count] == ' '){
@@ -62,8 +98,10 @@ void wordcheck(char *input){
 		list[lex_index].type = constsym;
 		char* name = wordRunner(input);
 		if(name == NULL){
-			printlexerror(2);
+			printlexerror(4);
 			return NULL;
+		}else if(checkvalid(name)==1){
+			printlexerror(2);
 		}
 		strcpy(list[lex_index].name, name);
 		lex_index++;
@@ -71,8 +109,10 @@ void wordcheck(char *input){
 		list[lex_index].type = varsym;
 		char* name = wordRunner(input);
 		if(name == NULL){
-			printlexerror(2);
+			printlexerror(4);
 			return NULL;
+		}else if(checkvalid(name)==1){
+			printlexerror(2);
 		}
 		strcpy(list[lex_index].name, name);
 		lex_index++;
@@ -80,8 +120,10 @@ void wordcheck(char *input){
 		list[lex_index].type = procsym;
 		char* name = wordRunner(input);
 		if(name == NULL){
-			printlexerror(2);
+			printlexerror(4);
 			return NULL;
+		}else if(checkvalid(name)==1){
+			printlexerror(2);
 		}
 		strcpy(list[lex_index].name, name);
 		lex_index++;
