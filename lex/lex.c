@@ -26,14 +26,27 @@ int count;
 void printlexerror(int type);
 void printtokens();
 char* wordRunner(char *input);
-void wordcheck(char* input)
-
+void wordcheck(char* input);
+void cutwhite(char* input);
+//cuts out whitespaces
+void cutwhite(char* input){
+	while(input[count] == ' '){
+		count++;
+	}
+}
+//finds the word in the input array starting at count
 char* wordRunner(char *input){
 	int wordlen = 0;
 	int wcount = count;
+	if(input[count] == ' '){
+		cutwhite(input);
+	}
 	while(isalpha(input[wcount])){
 		wordlen++;
 		wcount++;
+	}
+	if(wcount > 11){
+		return NULL;
 	}
 	char *word[wordlen];
 	word[wordlen] = '\0';
@@ -42,17 +55,35 @@ char* wordRunner(char *input){
 	}
 	return word;
 }
-
+//check if the word is reserved and do the thing for the word
 void wordcheck(char *input){
 	char* word = wordRunner(input);
 	if(strcmp(word, "const")){
 		list[lex_index].type = constsym;
+		char* name = wordRunner(input);
+		if(name == NULL){
+			printlexerror(2);
+			return NULL;
+		}
+		strcpy(list[lex_index].name, name);
 		lex_index++;
 	}else if(strcmp(word, "var")){
 		list[lex_index].type = varsym;
+		char* name = wordRunner(input);
+		if(name == NULL){
+			printlexerror(2);
+			return NULL;
+		}
+		strcpy(list[lex_index].name, name);
 		lex_index++;
 	}else if(strcmp(word, "procedure")){
 		list[lex_index].type = procsym;
+		char* name = wordRunner(input);
+		if(name == NULL){
+			printlexerror(2);
+			return NULL;
+		}
+		strcpy(list[lex_index].name, name);
 		lex_index++;
 	}else if(strcmp(word, "begin")){
 		list[lex_index].type = beginsym;
@@ -95,6 +126,7 @@ void wordcheck(char *input){
 lexeme *lexanalyzer(char *input){
 	lex_index = 0;
 	count = 0;
+	//iterably loop through the input array
 	while(input[count] != '\0'){
 		switch(input[count]){
 			case ';':
