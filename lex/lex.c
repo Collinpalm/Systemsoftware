@@ -87,36 +87,47 @@ void wordcheck(char *input){
 		lex_index++;
 	}else if(strcmp(word, "begin")){
 		list[lex_index].type = beginsym;
+		strcpy(list[lex_index].name, 'begin');
 		lex_index++;
 	}else if(strcmp(word, "end")){
 		list[lex_index].type = endsym;
+		strcpy(list[lex_index].name, 'end');
 		lex_index++;
 	}else if(strcmp(word, "while")){
 		list[lex_index].type = whilesym;
+		strcpy(list[lex_index].name, 'while');
 		lex_index++;
 	}else if(strcmp(word, "do")){
 		list[lex_index].type = dosym;
+		strcpy(list[lex_index].name, 'do');
 		lex_index++;
 	}else if(strcmp(word, "if")){
 		list[lex_index].type = ifsym;
+		strcpy(list[lex_index].name, 'if');
 		lex_index++;
 	}else if(strcmp(word, "then")){
 		list[lex_index].type = thensym;
+		strcpy(list[lex_index].name, 'then');
 		lex_index++;
 	}else if(strcmp(word, "else")){
 		list[lex_index].type = elsesym;
+		strcpy(list[lex_index].name, 'else');
 		lex_index++;
 	}else if(strcmp(word, "call")){
 		list[lex_index].type = callsym;
+		strcpy(list[lex_index].name, 'call');
 		lex_index++;
 	}else if(strcmp(word, "write")){
 		list[lex_index].type = writesym;
+		strcpy(list[lex_index].name, 'write');
 		lex_index++;
 	}else if(strcmp(word, "read")){
 		list[lex_index].type = readsym;
+		strcpy(list[lex_index].name, 'read');
 		lex_index++;
 	}else if(strcmp(word, "odd")){
 		list[lex_index].type = oddsym;
+		strcpy(list[lex_index].name, 'odd');
 		lex_index++;
 	}
 
@@ -131,47 +142,57 @@ lexeme *lexanalyzer(char *input){
 		switch(input[count]){
 			case ';':
 				list[lex_index].type = semicolonsym;
+				strcpy(list[lex_index].name, ';');
 				lex_index++;
 				break;
 			case '.':
 				list[lex_index].type = periodsym;
+				strcpy(list[lex_index].name, '.');
 				lex_index++;
 				break;
 			case ',':
 				list[lex_index].type = commasym;
+				strcpy(list[lex_index].name, ',');
 				lex_index++;
 				break;
 			case ')':
 				list[lex_index].type = rparensym;
+				strcpy(list[lex_index].name, ')');
 				lex_index++;
 				break;
 			case '(':
 				list[lex_index].type = lparensym;
+				strcpy(list[lex_index].name, '(');
 				lex_index++;
 				break;
 			case '>':
 				if(input[count+1] == '='){
 					list[lex_index].type = geqsym;
+					strcpy(list[lex_index].name, '>=');
 					lex_index++;
 					count++;
 				}else{
 					list[lex_index].type = gtrsym;
+					strcpy(list[lex_index].name, '>');
 					lex_index++;
 				}
 				break;
 			case '<':
 				if(input[count+1] == '='){
 					list[lex_index].type = leqsym;
+					strcpy(list[lex_index].name, '<=');
 					lex_index++;
 					count++;
 				}else{
 					list[lex_index].type = lsssym;
+					strcpy(list[lex_index].name, '<');
 					lex_index++;
 				}
 				break;
 			case '!':
 				if(input[count+1] == '='){
 					list[lex_index].type = leqsym;
+					strcpy(list[lex_index].name, '!=');
 					lex_index++;
 					count++;
 				}
@@ -179,33 +200,44 @@ lexeme *lexanalyzer(char *input){
 			case '=':
 				if(input[count+1] == '='){
 					list[lex_index].type = leqsym;
+					strcpy(list[lex_index].name, '==');
 					lex_index++;
 					count++;
 				}
 				break;
 			case '%':
 				list[lex_index].type = modsym;
+				strcpy(list[lex_index].name, '%');
 				lex_index++;
 				break;
 			case '/':
-				list[lex_index].type = divsym;
-				lex_index++;
+				if(input[count+1] == '/'){
+					//call function to run to the next newline character
+				}else{
+					list[lex_index].type = divsym;
+					strcpy(list[lex_index].name, '/');
+					lex_index++;
+				}
 				break;
 			case '*':
 				list[lex_index].type = multsym;
+				strcpy(list[lex_index].name, '*');
 				lex_index++;
 				break;
 			case '-':
 				list[lex_index].type = subsym;
+				strcpy(list[lex_index].name, '-');
 				lex_index++;
 				break;
 			case '+':
 				list[lex_index].type = addsym;
+				strcpy(list[lex_index].name, '+');
 				lex_index++;
 				break;
 			case ':':
 				if(input[count+1] == '='){
 					list[lex_index].type = leqsym;
+					strcpy(list[lex_index].name, ':=');
 					lex_index++;
 					count++;
 				}
