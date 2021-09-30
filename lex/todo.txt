@@ -1,6 +1,5 @@
--add context checking for operators 
--add list of identifier names to check against
--add function to check list
+-add context checking for operators ------------------------------
+-add list of identifier names to check against--------------------
+-add function to check list---------------------------------------
 -increment count
--add check to identifier to check if it comes after operator
 -add the digit and word checks into main loop
