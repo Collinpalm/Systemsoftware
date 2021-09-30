@@ -98,6 +98,7 @@ void wordcheck(char *input){
 		list[lex_index].type = constsym;
 		char* name = wordRunner(input);
 		strcpy(list[lex_index].name, name);
+		list[lex_index].value = 1;
 		lex_index++;
 		list[lex_index].type = identsym;
 		name = wordRunner(input);
@@ -113,6 +114,7 @@ void wordcheck(char *input){
 		list[lex_index].type = varsym;
 		char* name = wordRunner(input);
 		strcpy(list[lex_index].name, "var");
+		list[lex_index].value = 2;
 		lex_index++;
 		list[lex_index].type = identsym;
 		name = wordRunner(input);
@@ -123,11 +125,14 @@ void wordcheck(char *input){
 			printlexerror(2);
 			return NULL;
 		}
+		strcpy(list[lex_index].name, name);
+		list[lex_index].value = 14;
 		lex_index++;
 	}else if(strcmp(word, "procedure")){
 		list[lex_index].type = procsym;
 		char* name = wordRunner(input);
 		strcpy(list[lex_index].name, "procedure");
+		list[lex_index].value = 3;
 		lex_index++;
 		list[lex_index].type = identsym;
 		name = wordRunner(input);
@@ -138,50 +143,64 @@ void wordcheck(char *input){
 			printlexerror(2);
 			return NULL;
 		}
+		strcpy(list[lex_index].name, name);
+		list[lex_index].value = 14;
+		lex_index++;
 		lex_index++;
 	}else if(strcmp(word, "begin")){
 		list[lex_index].type = beginsym;
 		strcpy(list[lex_index].name, 'begin');
+		list[lex_index].value = 4;
 		lex_index++;
 	}else if(strcmp(word, "end")){
 		list[lex_index].type = endsym;
 		strcpy(list[lex_index].name, 'end');
+		list[lex_index].value = 5;
 		lex_index++;
 	}else if(strcmp(word, "while")){
 		list[lex_index].type = whilesym;
 		strcpy(list[lex_index].name, 'while');
+		list[lex_index].value = 6;
 		lex_index++;
 	}else if(strcmp(word, "do")){
 		list[lex_index].type = dosym;
 		strcpy(list[lex_index].name, 'do');
+		list[lex_index].value = 7;
 		lex_index++;
 	}else if(strcmp(word, "if")){
 		list[lex_index].type = ifsym;
 		strcpy(list[lex_index].name, 'if');
+		list[lex_index].value = 8;
 		lex_index++;
 	}else if(strcmp(word, "then")){
 		list[lex_index].type = thensym;
 		strcpy(list[lex_index].name, 'then');
+		list[lex_index].value = 9;
 		lex_index++;
 	}else if(strcmp(word, "else")){
 		list[lex_index].type = elsesym;
 		strcpy(list[lex_index].name, 'else');
+		list[lex_index].value = 10;
 		lex_index++;
 	}else if(strcmp(word, "call")){
 		list[lex_index].type = callsym;
 		strcpy(list[lex_index].name, 'call');
+		list[lex_index].value = 11;
 		lex_index++;
 	}else if(strcmp(word, "write")){
 		list[lex_index].type = writesym;
 		strcpy(list[lex_index].name, 'write');
+		list[lex_index].value = 12;
 		lex_index++;
 	}else if(strcmp(word, "read")){
 		list[lex_index].type = readsym;
 		strcpy(list[lex_index].name, 'read');
+		list[lex_index].value = 13;
 		lex_index++;
 	}else if(strcmp(word, "odd")){
 		list[lex_index].type = oddsym;
 		strcpy(list[lex_index].name, 'odd');
+		list[lex_index].value = 28;
 		lex_index++;
 	}
 
