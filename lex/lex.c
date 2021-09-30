@@ -96,12 +96,11 @@ void wordcheck(char *input){
 	char* word = wordRunner(input);
 	if(strcmp(word, "const")){
 		list[lex_index].type = constsym;
-		char* name = wordRunner(input);
-		strcpy(list[lex_index].name, name);
+		strcpy(list[lex_index].name, "const");
 		list[lex_index].value = 1;
 		lex_index++;
 		list[lex_index].type = identsym;
-		name = wordRunner(input);
+		char* name = wordRunner(input);
 		if(name == NULL){
 			printlexerror(4);
 			return NULL;
@@ -112,12 +111,11 @@ void wordcheck(char *input){
 		lex_index++;
 	}else if(strcmp(word, "var")){
 		list[lex_index].type = varsym;
-		char* name = wordRunner(input);
 		strcpy(list[lex_index].name, "var");
 		list[lex_index].value = 2;
 		lex_index++;
 		list[lex_index].type = identsym;
-		name = wordRunner(input);
+		char* name = wordRunner(input);
 		if(name == NULL){
 			printlexerror(4);
 			return NULL;
@@ -130,12 +128,11 @@ void wordcheck(char *input){
 		lex_index++;
 	}else if(strcmp(word, "procedure")){
 		list[lex_index].type = procsym;
-		char* name = wordRunner(input);
 		strcpy(list[lex_index].name, "procedure");
 		list[lex_index].value = 3;
 		lex_index++;
 		list[lex_index].type = identsym;
-		name = wordRunner(input);
+		char* name = wordRunner(input);
 		if(name == NULL){
 			printlexerror(4);
 			return NULL;
@@ -145,7 +142,6 @@ void wordcheck(char *input){
 		}
 		strcpy(list[lex_index].name, name);
 		list[lex_index].value = 14;
-		lex_index++;
 		lex_index++;
 	}else if(strcmp(word, "begin")){
 		list[lex_index].type = beginsym;
@@ -187,15 +183,51 @@ void wordcheck(char *input){
 		strcpy(list[lex_index].name, 'call');
 		list[lex_index].value = 11;
 		lex_index++;
+		list[lex_index].type = identsym;
+		char* name = wordRunner(input);
+		if(name == NULL){
+			printlexerror(4);
+			return NULL;
+		}else if(checkvalid(name)==1){
+			printlexerror(2);
+			return NULL;
+		}
+		strcpy(list[lex_index].name, name);
+		list[lex_index].value = 14;
+		lex_index++;
 	}else if(strcmp(word, "write")){
 		list[lex_index].type = writesym;
 		strcpy(list[lex_index].name, 'write');
 		list[lex_index].value = 12;
 		lex_index++;
+		list[lex_index].type = identsym;
+		char* name = wordRunner(input);
+		if(name == NULL){
+			printlexerror(4);
+			return NULL;
+		}else if(checkvalid(name)==1){
+			printlexerror(2);
+			return NULL;
+		}
+		strcpy(list[lex_index].name, name);
+		list[lex_index].value = 14;
+		lex_index++;
 	}else if(strcmp(word, "read")){
 		list[lex_index].type = readsym;
 		strcpy(list[lex_index].name, 'read');
 		list[lex_index].value = 13;
+		lex_index++;
+		list[lex_index].type = identsym;
+		char* name = wordRunner(input);
+		if(name == NULL){
+			printlexerror(4);
+			return NULL;
+		}else if(checkvalid(name)==1){
+			printlexerror(2);
+			return NULL;
+		}
+		strcpy(list[lex_index].name, name);
+		list[lex_index].value = 14;
 		lex_index++;
 	}else if(strcmp(word, "odd")){
 		list[lex_index].type = oddsym;
