@@ -100,8 +100,6 @@ void wordcheck(char *input){
 		if(name == NULL){
 			printlexerror(4);
 			return NULL;
-		}else if(checkvalid(name)==1){
-			printlexerror(2);
 		}
 		strcpy(list[lex_index].name, name);
 		lex_index++;
@@ -111,8 +109,6 @@ void wordcheck(char *input){
 		if(name == NULL){
 			printlexerror(4);
 			return NULL;
-		}else if(checkvalid(name)==1){
-			printlexerror(2);
 		}
 		strcpy(list[lex_index].name, name);
 		lex_index++;
