@@ -22,6 +22,7 @@
 lexeme *list;
 int lex_index;
 int count;
+char* varnames[MAX_NUMBER_TOKENS];
 
 void printlexerror(int type);
 void printtokens();
