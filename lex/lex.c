@@ -97,31 +97,47 @@ void wordcheck(char *input){
 	if(strcmp(word, "const")){
 		list[lex_index].type = constsym;
 		char* name = wordRunner(input);
-		if(name == NULL){
-			printlexerror(4);
-			return NULL;
-		}
 		strcpy(list[lex_index].name, name);
 		lex_index++;
-	}else if(strcmp(word, "var")){
-		list[lex_index].type = varsym;
-		char* name = wordRunner(input);
-		if(name == NULL){
-			printlexerror(4);
-			return NULL;
-		}
-		strcpy(list[lex_index].name, name);
-		lex_index++;
-	}else if(strcmp(word, "procedure")){
-		list[lex_index].type = procsym;
-		char* name = wordRunner(input);
+		list[lex_index].type = identsym;
+		name = wordRunner(input);
 		if(name == NULL){
 			printlexerror(4);
 			return NULL;
 		}else if(checkvalid(name)==1){
 			printlexerror(2);
+			return NULL;
 		}
-		strcpy(list[lex_index].name, name);
+		lex_index++;
+	}else if(strcmp(word, "var")){
+		list[lex_index].type = varsym;
+		char* name = wordRunner(input);
+		strcpy(list[lex_index].name, "var");
+		lex_index++;
+		list[lex_index].type = identsym;
+		name = wordRunner(input);
+		if(name == NULL){
+			printlexerror(4);
+			return NULL;
+		}else if(checkvalid(name)==1){
+			printlexerror(2);
+			return NULL;
+		}
+		lex_index++;
+	}else if(strcmp(word, "procedure")){
+		list[lex_index].type = procsym;
+		char* name = wordRunner(input);
+		strcpy(list[lex_index].name, "procedure");
+		lex_index++;
+		list[lex_index].type = identsym;
+		name = wordRunner(input);
+		if(name == NULL){
+			printlexerror(4);
+			return NULL;
+		}else if(checkvalid(name)==1){
+			printlexerror(2);
+			return NULL;
+		}
 		lex_index++;
 	}else if(strcmp(word, "begin")){
 		list[lex_index].type = beginsym;
