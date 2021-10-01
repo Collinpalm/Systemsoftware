@@ -63,6 +63,7 @@ int checkvalid(char* word){
 	}else if(strcmp(word, "odd")){
 		return 1;
 	}else{
+		//checks if the variable name has been used, if so it returns that its valid
 		for(int i = 0; i < MAX_NUMBER_TOKENS; i++){
 			if(varnames[i]==NULL){
 				break;
@@ -87,13 +88,16 @@ char* wordRunner(char *input){
 	if(input[count] == ' '){
 		cutwhite(input);
 	}
+	//find how long the word is based on if it detects an alphabet character
 	while(isalpha(input[wcount])){
 		wordlen++;
 		wcount++;
 	}
-	if(wcount > 11){
+	//if the word is too long 
+	if(wcount > MAX_IDENT_LEN){
 		return NULL;
 	}
+	//pull the word out
 	char *word[wordlen];
 	word[wordlen] = '\0';
 	for(int i = 0; i < wordlen; i++){
@@ -103,14 +107,19 @@ char* wordRunner(char *input){
 }
 //check if the word is reserved and do the thing for the word
 char* wordcheck(char *input){
+	//get the word
 	char* word = wordRunner(input);
+	//if\else to find the word
 	if(strcmp(word, "const")){
+		//add the reserved word to the list
 		list[lex_index].type = constsym;
 		strcpy(list[lex_index].name, "const");
 		list[lex_index].value = 1;
 		lex_index++;
+		//add the identifier to the list
 		list[lex_index].type = identsym;
 		char* name = wordRunner(input);
+		//if an error print it and set the flag
 		if(name == NULL){
 			printlexerror(4);
 			flag = 1;
@@ -254,19 +263,23 @@ char* wordcheck(char *input){
 
 }
 
-
+//function to get a number out of the input
 char* getnum(char* input){
+	//start at count
 	int initial = count;
+	//find the length of the count
 	while(isdigit(input[count])){
 		count++;
 	}
 	char str[count-initial];
+	//if the length of the digit is short enough count it and return it
 	if(count-initial < MAX_NUMBER_LEN){
 		for(int i = 0; i< count-initial; i++){
 			str[i] = input[initial+i];
 		}
 		return (char*) str;
 	}
+	//if the word is too long print error, and set flag
 	printlexerror(3);
 	flag = 1;
 	return NULL;
@@ -274,21 +287,26 @@ char* getnum(char* input){
 }
 
 lexeme *lexanalyzer(char *input){
-	lex_index = 0;
-	count = 0;
+	lex_index = 0;//set the list counter to the begining
+	count = 0;//set the input counter to the begining
+	flag = 0;//set the flag to no error(1-error, 0-noerror)
 	//iterably loop through the input array
 	while(input[count] != '\0'){
+		//check if its a control character and skip it
 		if(iscntrl(input[count])){
 			count++;
+		//check if its a number and count it
 		}else if(isdigit(input[count])){
 			list[lex_index].type = semicolonsym;
 			strcpy(list[lex_index].name, getnum(input));
 			list[lex_index].value = 15;
 			lex_index++;
 			count++;
+		//check if its an alphabet character and check for word
 		}else if(isalpha(input[count])){
 			wordcheck(&input[count]);
 			count++;
+		//check if its one of the char operators
 		}else{
 			switch(input[count]){
 				case ';':
@@ -462,6 +480,7 @@ lexeme *lexanalyzer(char *input){
 					break;
 			}
 		}
+		//if flag is set to error, return null
 		if(flag == 1){
 			return NULL;
 		}		
