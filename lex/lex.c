@@ -469,7 +469,7 @@ lexeme *lexanalyzer(char *input){
 	}
 	
 	
-	
+	printtokens();
 	return list;
 }
 
