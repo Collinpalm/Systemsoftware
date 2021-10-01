@@ -21,7 +21,7 @@
 
 lexeme *list;
 int lex_index;
-int count;
+int count, flag;
 char* varnames[MAX_NUMBER_TOKENS];
 
 void printlexerror(int type);
@@ -113,10 +113,10 @@ char* wordcheck(char *input){
 		char* name = wordRunner(input);
 		if(name == NULL){
 			printlexerror(4);
-			return NULL;
+			flag = 1;
 		}else if(checkvalid(name)==1){
 			printlexerror(2);
-			return NULL;
+			flag = 1;
 		}
 		lex_index++;
 	}else if(strcmp(word, "var")){
@@ -128,8 +128,10 @@ char* wordcheck(char *input){
 		char* name = wordRunner(input);
 		if(name == NULL){
 			printlexerror(4);
+			flag = 1;
 		}else if(checkvalid(name)==1){
 			printlexerror(2);
+			flag = 1;
 		}
 		strcpy(list[lex_index].name, name);
 		list[lex_index].value = 14;
@@ -142,9 +144,10 @@ char* wordcheck(char *input){
 		list[lex_index].type = identsym;
 		char* name = wordRunner(input);
 		if(name == NULL){
-			printlexerror(4);
+			flag = 1;
 		}else if(checkvalid(name)==1){
 			printlexerror(2);
+			flag = 1;
 		}
 		strcpy(list[lex_index].name, name);
 		list[lex_index].value = 14;
@@ -193,8 +196,10 @@ char* wordcheck(char *input){
 		char* name = wordRunner(input);
 		if(name == NULL){
 			printlexerror(4);
+			flag = 1;
 		}else if(checkvalid(name)==1){
 			printlexerror(2);
+			flag = 1;
 		}
 		strcpy(list[lex_index].name, name);
 		list[lex_index].value = 14;
@@ -208,8 +213,10 @@ char* wordcheck(char *input){
 		char* name = wordRunner(input);
 		if(name == NULL){
 			printlexerror(4);
+			flag = 1;
 		}else if(checkvalid(name)==1){
 			printlexerror(2);
+			flag = 1;
 		}
 		strcpy(list[lex_index].name, name);
 		list[lex_index].value = 14;
@@ -223,8 +230,10 @@ char* wordcheck(char *input){
 		char* name = wordRunner(input);
 		if(name == NULL){
 			printlexerror(4);
+			flag = 1;
 		}else if(checkvalid(name)==1){
 			printlexerror(2);
+			flag = 1;
 		}
 		strcpy(list[lex_index].name, name);
 		list[lex_index].value = 14;
@@ -252,10 +261,16 @@ char* getnum(char* input){
 		count++;
 	}
 	char str[count-initial];
-	for(int i = 0; i< count-initial; i++){
-		str[i] = input[initial+i];
+	if(count-initial < MAX_NUMBER_LEN){
+		for(int i = 0; i< count-initial; i++){
+			str[i] = input[initial+i];
+		}
+		return (char*) str;
 	}
-	return str;
+	printlexerror(3);
+	flag = 1;
+	return NULL;
+	
 }
 
 lexeme *lexanalyzer(char *input){
@@ -445,7 +460,10 @@ lexeme *lexanalyzer(char *input){
 					break;
 			}
 		}
-		
+		if(flag == 1){
+			return NULL;
+		}		
+	
 	}
 	
 	
