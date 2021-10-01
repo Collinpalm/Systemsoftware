@@ -450,7 +450,7 @@ lexeme *lexanalyzer(char *input){
 	
 	
 	
-	return NULL;
+	return list;
 }
 
 
