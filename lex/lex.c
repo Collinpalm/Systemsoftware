@@ -278,7 +278,9 @@ lexeme *lexanalyzer(char *input){
 	count = 0;
 	//iterably loop through the input array
 	while(input[count] != '\0'){
-		if(isdigit(input[count])){
+		if(iscntrl(input[count])){
+			count++;
+		}else if(isdigit(input[count])){
 			list[lex_index].type = semicolonsym;
 			strcpy(list[lex_index].name, getnum(input));
 			list[lex_index].value = 15;
@@ -339,7 +341,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 				case '<':
@@ -357,7 +359,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 				case '!':
@@ -369,7 +371,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 				case '=':
@@ -381,7 +383,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 				case '%':
@@ -393,7 +395,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 				case '/':
@@ -407,7 +409,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 				case '*':
@@ -419,7 +421,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 				case '-':
@@ -431,7 +433,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 				case '+':
@@ -443,7 +445,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 				case ':':
@@ -455,7 +457,7 @@ lexeme *lexanalyzer(char *input){
 						count++;
 					}else{
 						printlexerror(6);
-						return NULL;
+						flag = 1;
 					}
 					break;
 			}
