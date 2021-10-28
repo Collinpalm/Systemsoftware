@@ -366,7 +366,7 @@ void const_dec(lexeme *list){
 			if(list[lIndex].type == identsym){
 				printparseerror(2);
 			}else{
-				printparseerror(7);
+				printparseerror(14);
 			}
 		}
 		lIndex++;
