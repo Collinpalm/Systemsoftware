@@ -33,10 +33,52 @@ void term(lexeme *list){
 
 }
 void expression(lexeme *list){
-
+	if(list[lIndex].type == subsym){
+		lIndex++;
+		term(list);
+		emit(2,0,1);
+		while(list[lIndex].type == (addsym || subsym)){
+			if(list[lIndex].type == addsym){
+				lIndex++;
+			}
+		}
+	}
 }
 void condition(lexeme *list){
-
+	if(list[lIndex].type == oddsym){
+		lIndex++;
+		expression(list);
+		emit(2,0,6);
+	}else{
+		expression(list);
+		if(list[lIndex].type == eqlsym){
+			lIndex++;
+			expression(list);
+			emit(2, 0, 8);
+		}else if(list[lIndex].type == neqsym){
+			lIndex++;
+			expression(list);
+			emit(2, 0, 9);
+		}else if(list[lIndex].type == lsssym){
+			lIndex++;
+			expression(list);
+			emit(2, 0, 10);
+		}else if(list[lIndex].type == leqsym){
+			lIndex++;
+			expression(list);
+			emit(2, 0, 11);
+		}else if(list[lIndex].type == gtrsym){
+			lIndex++;
+			expression(list);
+			emit(2, 0, 12);
+		}else if(list[lIndex].type == geqsym){
+			lIndex++;
+			expression(list);
+			emit(2, 0, 13);
+		}else{
+			printparseerror(19);
+		}
+	}
 }
 void statement(lexeme *list){
 	if(list[lIndex].type == identsym){
@@ -127,7 +169,23 @@ void statement(lexeme *list){
 		return;
 	}
 	if(list[lIndex].type == writesym){
-		
+		lIndex++;
+		expression(list);
+		//emit write emit()
+		return;
+	}
+	if(list[lIndex].type == callsym){
+		lIndex++;
+		int symIdx = find_sym(list, 3);
+		if(symIdx == -1){
+			if(find_sym(list, 1) == find_sym(list, 3)){
+				printparseerror(3);
+			}else{
+				printparseerror(4);
+			}
+		}
+		lIndex++;
+		emit(5, level-table[symIdx].level, symIdx);
 	}
 }
 void proc_dec(lexeme *list){
