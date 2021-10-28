@@ -55,9 +55,11 @@ void factor(lexeme *list){
 		int symIdx_const = find_sym(list, 1);
 		if(symIdx_var == -1 && symIdx_const == -1){
 			if(find_sym(list, 3) != -1){
-				printparseerror(16);
+				printparseerror(18);
+				exit(0);
 			}else{
-				printparseerror(17);
+				printparseerror(19);
+				exit(0);
 			}
 		}
 		if(symIdx_var == -1){
@@ -75,11 +77,13 @@ void factor(lexeme *list){
 		lIndex++;
 		expression(list);
 		if(list[lIndex].type != rparensym){
-			printparseerror(2);
+			printparseerror(12);
+			exit(0);
 		}
 		lIndex++;
 	}else{
-		printparseerror(3);
+		printparseerror(11);
+		exit(0);
 	}
 }
 void term(lexeme *list){
@@ -134,7 +138,8 @@ void expression(lexeme *list){
 		}
 	}
 	if(list[lIndex].type == (identsym || numbersym || oddsym)){
-		printparseerror(3);
+		printparseerror(17);
+		exit(0);
 	}
 }
 void condition(lexeme *list){
@@ -169,7 +174,8 @@ void condition(lexeme *list){
 			expression(list);
 			emit(2, 0, 13);
 		}else{
-			printparseerror(19);
+			printparseerror(10);
+			exit(0);
 		}
 	}
 }
@@ -179,8 +185,10 @@ void statement(lexeme *list){
 		if(symIdx == -1){
 			if(find_sym(list, 1) != find_sym(list, 3)){
 				printparseerror(16);
+				exit(0);
 			}else{
 				printparseerror(17);
+				exit(0);
 			}
 		}
 		lIndex++;
@@ -199,9 +207,11 @@ void statement(lexeme *list){
 		}while(list[lIndex].type == commasym);
 		if(list[lIndex].type != endsym){
 			if(list[lIndex].type == (identsym || beginsym || ifsym || whilesym || readsym || writesym || callsym)){
-				printparseerror(19);
+				printparseerror(15);
+				exit(0);
 			}else{
-				printparseerror(19);
+				printparseerror(16);
+				exit(0);
 			}
 		}
 		lIndex++;
@@ -213,7 +223,8 @@ void statement(lexeme *list){
 		int jpcIdx = cIndex;
 		emit(8, 0, jpcIdx);
 		if(list[lIndex].type != thensym){
-			printparseerror(19);
+			printparseerror(8);
+			exit(0);
 		}
 		lIndex++;
 		statement(list);
@@ -233,7 +244,8 @@ void statement(lexeme *list){
 		int loopIdx = cIndex;
 		condition(list);
 		if(list[lIndex].type!=dosym){
-			printparseerror(19);
+			printparseerror(9);
+			exit(0);
 		}
 		lIndex++;
 		int jpcIdx = cIndex;
@@ -246,14 +258,17 @@ void statement(lexeme *list){
 	if(list[lIndex].type == readsym){
 		lIndex++;
 		if(list[lIndex].type != identsym){
-			printparseerror(19);
+			printparseerror(6);
+			exit(0);
 		}
 		int symIdx = find_sym(list, 2);
 		if(symIdx == -1){
 			if(find_sym(list, 1) == find_sym(list, 3)){
-				printparseerror(3);
+				printparseerror(20);
+				exit(0);
 			}else{
-				printparseerror(4);
+				printparseerror(19);
+				exit(0);
 			}
 		}
 		lIndex++;
@@ -273,8 +288,10 @@ void statement(lexeme *list){
 		if(symIdx == -1){
 			if(find_sym(list, 1) == find_sym(list, 3)){
 				printparseerror(3);
+				exit(0);
 			}else{
-				printparseerror(13);
+				printparseerror(7);
+				exit(0);
 			}
 		}
 		lIndex++;
@@ -286,20 +303,24 @@ void proc_dec(lexeme *list){
 		lIndex++;
 		if(list[lIndex].type != identsym){
 			printparseerror(7);
+			exit(0);
 		}
 		int symidx = mult_dec(list);
 		if(symidx != -1){
 			printparseerror(18);
+			exit(0);
 		}
 		addToSymbolTable(3, list[lIndex].name, 0, level, 0, 0);
 		lIndex++;
 		if(list[lIndex].type == semicolonsym){
 			printparseerror(14);
+			exit(0);
 		}
 		lIndex++;
 		block(list);
 		if(list[lIndex].type != semicolonsym){
 			printparseerror(15);
+			exit(0);
 		}
 		lIndex++;
 		emit(2,0,0);
@@ -313,10 +334,12 @@ int var_dec(lexeme *list){
 			lIndex++;
 			if(list[lIndex].type == varsym){
 				printparseerror(3);
+				exit(0);
 			}
 			int symidx = mult_dec(list);
 			if(symidx != -1){
 				printparseerror(18);
+				exit(0);
 			}
 			if(level==0){
 				addToSymbolTable(2, list[lIndex].name, 0, level, numVars-1, 0);
@@ -328,8 +351,10 @@ int var_dec(lexeme *list){
 		if(list[lIndex].type != semicolonsym){
 			if(list[lIndex].type == identsym){
 				printparseerror(13);
+				exit(0);
 			}else{
 				printparseerror(14);
+				exit(0);
 			}
 		}
 		lIndex++;
@@ -342,20 +367,24 @@ void const_dec(lexeme *list){
 			lIndex++;
 			if(list[lIndex].type != identsym){
 				printparseerror(2);
+				exit(0);
 			}
 			int symindex = mult_dec(list);
 			if(symindex != -1){
 				printparseerror(18);
+				exit(0);
 			}
 			addToSymbolTable(1, list[lIndex].name, list[lIndex].value, level, tIndex, 0);
 			tIndex++;
 			lIndex++;
 			if(list[lIndex].type != assignsym){
 				printparseerror(5);
+				exit(0);
 			}
 			lIndex++;
 			if(list[lIndex].type != numbersym){
 				printparseerror(2);
+				exit(0);
 			}
 			addToSymbolTable(1, list[lIndex].name, list[lIndex].value, level, tIndex, 0);
 			tIndex++;
@@ -365,8 +394,10 @@ void const_dec(lexeme *list){
 		if(list[lIndex].type != semicolonsym){
 			if(list[lIndex].type == identsym){
 				printparseerror(13);
+				exit(0);
 			}else{
 				printparseerror(14);
+				exit(0);
 			}
 		}
 		lIndex++;
@@ -396,6 +427,7 @@ void program(lexeme *list){
 	block(list);
 	if(list[lIndex].type != periodsym){
 		printparseerror(1);
+		exit(0);
 	}
 	emit(9,0,3);
 	
