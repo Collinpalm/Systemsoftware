@@ -443,6 +443,8 @@ void program(lexeme *list){
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
 	code = NULL;
+	level = 0;
+	program(list);
 	code[cIndex].opcode = -1;
 
 	return code;
