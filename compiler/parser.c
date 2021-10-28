@@ -185,7 +185,7 @@ void statement(lexeme *list){
 		}
 		lIndex++;
 		if(list[lIndex].type != assignsym){
-			printparseerror(18);
+			printparseerror(5);
 		}
 		lIndex++;
 		expression(list);
@@ -257,14 +257,14 @@ void statement(lexeme *list){
 			}
 		}
 		lIndex++;
-		//emit read, but IDK how to do thatemit()
+		emit(9,0,2);
 		emit(4,level-table[symIdx].level, table[symIdx].addr);
 		return;
 	}
 	if(list[lIndex].type == writesym){
 		lIndex++;
 		expression(list);
-		//emit write emit()
+		emit(9,0,1);
 		return;
 	}
 	if(list[lIndex].type == callsym){
