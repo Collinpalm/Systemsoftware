@@ -436,6 +436,7 @@ void block(lexeme *list){
 	level-=1;
 }
 void program(lexeme *list){
+	printf("inside program");
 	lIndex = 0;
 	emit(7, 0, 0);
 	addToSymbolTable(3, "main", 0, 0, 0, 0);
@@ -458,11 +459,16 @@ void program(lexeme *list){
 
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
+	printf("main");
 	code = NULL;
 	level = 0;
-	program(list);
-	code[cIndex].opcode = -1;
+	lIndex = 0;
+	tIndex = 0;
+	cIndex = 0;
+	code = calloc(MAX_CODE_LENGTH, sizeof(instruction));
+	table = calloc(MAX_SYMBOL_COUNT, sizeof(symbol));
 
+	code[cIndex].opcode = -1;
 	return code;
 }
 
