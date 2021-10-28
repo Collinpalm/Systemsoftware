@@ -55,8 +55,27 @@ void const_dec(lexeme *list){
 			if(symindex != -1){
 				printparseerror(3);
 			}
-
+			addToSymbolTable(1, list[lIndex].name, list[lIndex].value, level, tIndex, 0);
+			tIndex++;
+			lIndex++;
+			if(list[lIndex].type != assignsym){
+				printparseerror(4);
+			}
+			lIndex++;
+			if(list[lIndex].type != numbersym){
+				printparseerror(5);
+			}
+			addToSymbolTable(1, list[lIndex].name, list[lIndex].value, level, tIndex, 0);
+			tIndex++;
+			lIndex++;
 		}while(list[lIndex].type == commasym);
+		if(list[lIndex].type != semicolonsym){
+			if(list[lIndex].type == identsym){
+				printparseerror(6);
+			}else{
+				printparseerror(7);
+			}
+		}
 	}
 }
 void block(lexeme *list){
