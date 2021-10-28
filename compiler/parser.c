@@ -22,7 +22,7 @@ void printassemblycode();
 
 int mult_dec(lexeme *list){
 	for(int j = 0; j <=cIndex;j++){
-		if(strcmp(table[j].name, list[lIndex].name) == 0 && table[j].level = level && table[j].mark == 0){
+		if(strcmp(table[j].name, list[lIndex].name) == 0 && table[j].level == level && table[j].mark == 0){
 			return j;
 		}
 	}
@@ -274,7 +274,7 @@ void statement(lexeme *list){
 			if(find_sym(list, 1) == find_sym(list, 3)){
 				printparseerror(3);
 			}else{
-				printparseerror(4);
+				printparseerror(13);
 			}
 		}
 		lIndex++;
@@ -285,11 +285,11 @@ void proc_dec(lexeme *list){
 	while(list[lIndex].type == procsym){
 		lIndex++;
 		if(list[lIndex].type != identsym){
-			printparseerror(12);
+			printparseerror(7);
 		}
 		int symidx = mult_dec(list);
 		if(symidx != -1){
-			printparseerror(13);
+			printparseerror(18);
 		}
 		addToSymbolTable(3, list[lIndex].name, 0, level, 0, 0);
 		lIndex++;
@@ -312,11 +312,11 @@ int var_dec(lexeme *list){
 			numVars++;
 			lIndex++;
 			if(list[lIndex].type == varsym){
-				printparseerror(8);
+				printparseerror(3);
 			}
 			int symidx = mult_dec(list);
 			if(symidx != -1){
-				printparseerror(9);
+				printparseerror(18);
 			}
 			if(level==0){
 				addToSymbolTable(2, list[lIndex].name, 0, level, numVars-1, 0);
@@ -327,9 +327,9 @@ int var_dec(lexeme *list){
 		}while (list[lIndex].type == commasym);
 		if(list[lIndex].type != semicolonsym){
 			if(list[lIndex].type == identsym){
-				printparseerror(10);
+				printparseerror(13);
 			}else{
-				printparseerror(11);
+				printparseerror(14);
 			}
 		}
 		lIndex++;
@@ -364,7 +364,7 @@ void const_dec(lexeme *list){
 		lIndex++;
 		if(list[lIndex].type != semicolonsym){
 			if(list[lIndex].type == identsym){
-				printparseerror(2);
+				printparseerror(13);
 			}else{
 				printparseerror(14);
 			}
