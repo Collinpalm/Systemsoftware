@@ -22,7 +22,7 @@ void printassemblycode();
 
 int mult_dec(lexeme *list){
 	for(int j = 0; j <=cIndex;j++){
-		if(table[j].name == list[lIndex].name && table[j].level = level && table[j].mark == 0){
+		if(strcmp(table[j].name, list[lIndex].name) == 0 && table[j].level = level && table[j].mark == 0){
 			return j;
 		}
 	}
@@ -32,7 +32,7 @@ int find_sym(lexeme *list, int kind){
 	int i[MAX_SYMBOL_COUNT];
 	int indexCount = 0;
 	for(int j = 0; j <=cIndex;j++){
-		if(table[j].name == list[lIndex].name && table[j].kind == kind && table[j].mark == 0){
+		if(strcmp(table[j].name, list[lIndex].name) == 0 && table[j].kind == kind && table[j].mark == 0){
 			i[indexCount] = j;
 			indexCount++;
 		}
@@ -133,7 +133,7 @@ void expression(lexeme *list){
 			}
 		}
 	}
-	if(list[lIndex].type ==){
+	if(list[lIndex].type == (identsym || numbersym || oddsym)){
 		printparseerror(3);
 	}
 }
