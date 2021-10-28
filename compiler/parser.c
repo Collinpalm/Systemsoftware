@@ -20,17 +20,85 @@ void printsymboltable();
 void printassemblycode();
 
 
-int find_sym(lexeme *list, int kind){
-
+int mult_dec(lexeme *list){
+	for(int j = 0; j <=cIndex;j++){
+		if(table[j].name == list[lIndex].name && table[j].level = level && table[j].mark == 0){
+			return j;
+		}
+	}
+		return -1;
 }
-void mar(){
-
+int find_sym(lexeme *list, int kind){
+	int i[MAX_SYMBOL_COUNT];
+	int indexCount = 0;
+	for(int j = 0; j <=cIndex;j++){
+		if(table[j].name == list[lIndex].name && table[j].kind == kind && table[j].mark == 0){
+			i[indexCount] = j;
+			indexCount++;
+		}
+	}
+	if(indexCount == 0){
+		return -1;
+	}
+	return i[indexCount];
+}
+void mark(){
+	for(int i = cIndex; i>= 0; i--){
+		if(table[i].level == level){
+			table[i].mark = 1;
+		}
+	}
 }
 void factor(lexeme *list){
-
+	if(list[lIndex].type == identsym){
+		int symIdx_var = find_sym(list, 2);
+		int symIdx_const = find_sym(list, 1);
+		if(symIdx_var == -1 && symIdx_const == -1){
+			if(find_sym(list, 3) != -1){
+				printparseerror(16);
+			}else{
+				printparseerror(17);
+			}
+		}
+		if(symIdx_var == -1){
+			emit(1,0,table[symIdx_const].val);
+		}else if(symIdx_const == -1 || table[symIdx_var].level>table[symIdx_const].level){
+			emit(3,level - table[symIdx_var].level,table[symIdx_var].addr);
+		}else{
+			emit(1,0,table[symIdx_const].val);
+		}
+		lIndex++;
+	}else if(list[lIndex].type == numbersym){
+		emit(1, 0, list[lIndex].value);
+		lIndex++;
+	}else if(list[lIndex].type == lparensym){
+		lIndex++;
+		expression(list);
+		if(list[lIndex].type != rparensym){
+			printparseerror(2);
+		}
+		lIndex++;
+	}else{
+		printparseerror(3);
+	}
 }
 void term(lexeme *list){
-
+	factor(list);
+	while(list[lIndex].type == (multsym || divsym || modsym)){
+		if(list[lIndex].type == multsym){
+			lIndex++;
+			factor(list);
+			emit(2, 0, 4);
+		}else if(list[lIndex].type == divsym){
+			lIndex++;
+			factor(list);
+			emit(2, 0, 5);
+		}else{
+			lIndex++;
+			factor(list);
+			emit(2, 0, 7);
+		}
+	}
 }
 void expression(lexeme *list){
 	if(list[lIndex].type == subsym){
@@ -40,8 +108,33 @@ void expression(lexeme *list){
 		while(list[lIndex].type == (addsym || subsym)){
 			if(list[lIndex].type == addsym){
 				lIndex++;
+				term(list);
+				emit(2,0,2);
+			}else{
+				lIndex++;
+				term(list);
+				emit(2,0,3);
 			}
 		}
+	}else{
+		if(list[lIndex].type == addsym){
+			lIndex++;
+		}		
+		term(list);
+		while(list[lIndex].type == (addsym || subsym)){
+			if(list[lIndex].type == addsym){
+				lIndex++;
+				term(list);
+				emit(2,0,2);
+			}else{
+				lIndex++;
+				term(list);
+				emit(2,0,3);
+			}
+		}
+	}
+	if(list[lIndex].type ==){
+		printparseerror(3);
 	}
 }
 void condition(lexeme *list){
@@ -194,7 +287,7 @@ void proc_dec(lexeme *list){
 		if(list[lIndex].type != identsym){
 			printparseerror(12);
 		}
-		int symidx = mult_dec(list[lIndex]);
+		int symidx = mult_dec(list);
 		if(symidx != -1){
 			printparseerror(13);
 		}
@@ -221,7 +314,7 @@ int var_dec(lexeme *list){
 			if(list[lIndex].type == varsym){
 				printparseerror(8);
 			}
-			int symidx = mult_dec(list[lIndex]);
+			int symidx = mult_dec(list);
 			if(symidx != -1){
 				printparseerror(9);
 			}
@@ -250,7 +343,7 @@ void const_dec(lexeme *list){
 			if(list[lIndex].type != identsym){
 				printparseerror(2);
 			}
-			int symindex = mult_dec(list[lIndex]);
+			int symindex = mult_dec(list);
 			if(symindex != -1){
 				printparseerror(3);
 			}
