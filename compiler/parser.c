@@ -18,6 +18,21 @@ void addToSymbolTable(int k, char n[], int v, int l, int a, int m);
 void printparseerror(int err_code);
 void printsymboltable();
 void printassemblycode();
+void program(lexeme *list);
+int mult_dec(lexeme *list);
+int find_sym(lexeme *list, int kind);
+void mark();
+void factor(lexeme *list);
+void term(lexeme *list);
+void condition(lexeme *list);
+void statement(lexeme *list);
+void proc_dec(lexeme *list);
+int var_dec(lexeme *list);
+void const_dec(lexeme *list);
+void block(lexeme *list);
+
+
+
 
 
 int mult_dec(lexeme *list){
