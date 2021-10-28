@@ -10,6 +10,8 @@ instruction *code;
 int cIndex;
 symbol *table;
 int tIndex;
+int level;
+int lIndex;
 
 void emit(int opname, int level, int mvalue);
 void addToSymbolTable(int k, char n[], int v, int l, int a, int m);
@@ -17,15 +19,87 @@ void printparseerror(int err_code);
 void printsymboltable();
 void printassemblycode();
 
+
+void mar(){
+
+}
+void factor(){
+
+}
+void term(){
+
+}
+void expression(){
+
+}
+void condition(){
+
+}
+void statement(){
+
+}
+void proc_dec(){
+
+}
+int var_dec(){
+
+}
+void const_dec(lexeme *list){
+	if(list[lIndex].type == constsym){
+		do{
+			lIndex++;
+			if(list[lIndex].type != identsym){
+				printparseerror(2);
+			}
+			int symindex = mult_dec(list[lIndex]);
+			if(symindex != -1){
+				printparseerror(3);
+			}
+
+		}while(list[lIndex].type == commasym);
+	}
+}
+void block(lexeme *list){
+	level += 1;
+	int procedureIndex = tIndex-1;
+	const_dec(list);
+	int x = var_dec();
+	proc_dec();
+	table[procedureIndex].addr = lIndex*3;
+	if (level == 0){
+		emit(6,0,x);
+	}else{
+		emit(6,0,x+3);
+	}
+	statement();
+	mark();
+	level-=1;
+}
+void program(lexeme *list){
+	lIndex = 0;
+	emit(7, 0, 0);
+	addToSymbolTable(3, "main", 0, 0, 0, 0);
+	level = -1;
+	block(list);
+	if(list[lIndex].type != periodsym){
+		printparseerror(1);
+	}
+	emit(9,0,3);
+	/*
+	for(int i = 0;i < sizeof(code);i++){
+		if(code[i].opcode ){
+
+		}
+	}*/
+	code[0].m = table[0].addr;
+}
+
+
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
 	code = NULL;
-	/* this line is EXTREMELY IMPORTANT, you MUST uncomment it
-		when you test your code otherwise IT WILL SEGFAULT in 
-		vm.o THIS LINE IS HOW THE VM KNOWS WHERE THE CODE ENDS
-		WHEN COPYING IT TO THE PAS
 	code[cIndex].opcode = -1;
-	*/
+
 	return code;
 }
 
