@@ -24,6 +24,7 @@ int find_sym(lexeme *list, int kind);
 void mark();
 void factor(lexeme *list);
 void term(lexeme *list);
+void expression(lexeme *list);
 void condition(lexeme *list);
 void statement(lexeme *list);
 void proc_dec(lexeme *list);
