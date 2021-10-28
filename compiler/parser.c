@@ -20,29 +20,170 @@ void printsymboltable();
 void printassemblycode();
 
 
+int find_sym(lexeme *list, int kind){
+
+}
 void mar(){
 
 }
-void factor(){
+void factor(lexeme *list){
 
 }
-void term(){
+void term(lexeme *list){
 
 }
-void expression(){
+void expression(lexeme *list){
 
 }
-void condition(){
+void condition(lexeme *list){
 
 }
-void statement(){
-
+void statement(lexeme *list){
+	if(list[lIndex].type == identsym){
+		int symIdx = find_sym(list, 2);
+		if(symIdx == -1){
+			if(find_sym(list, 1) != find_sym(list, 3)){
+				printparseerror(16);
+			}else{
+				printparseerror(17);
+			}
+		}
+		lIndex++;
+		if(list[lIndex].type != assignsym){
+			printparseerror(18);
+		}
+		lIndex++;
+		expression(list);
+		emit(4,level-table[symIdx].level, table[symIdx].addr);
+		return;		
+	}
+	if(list[lIndex].type == beginsym){
+		do{
+			lIndex++;
+			statement(list);
+		}while(list[lIndex].type == commasym);
+		if(list[lIndex].type != endsym){
+			if(list[lIndex].type == (identsym || beginsym || ifsym || whilesym || readsym || writesym || callsym)){
+				printparseerror(19);
+			}else{
+				printparseerror(19);
+			}
+		}
+		lIndex++;
+		return;
+	}
+	if(list[lIndex].type == ifsym){
+		lIndex++;
+		condition(list);
+		int jpcIdx = cIndex;
+		emit(8, 0, jpcIdx);
+		if(list[lIndex].type != thensym){
+			printparseerror(19);
+		}
+		lIndex++;
+		statement(list);
+		if(list[lIndex].type == elsesym){
+			int jmpIdx = cIndex;
+			emit(7, 0, jmpIdx);
+			code[jmpIdx].m = cIndex*3;
+			statement(list);
+			code[jmpIdx].m = cIndex*3;
+		}else{
+			code[jpcIdx].m = cIndex*3;
+		}
+		return;
+	}
+	if(list[lIndex].type == whilesym){
+		lIndex++;
+		int loopIdx = cIndex;
+		condition(list);
+		if(list[lIndex].type!=dosym){
+			printparseerror(19);
+		}
+		lIndex++;
+		int jpcIdx = cIndex;
+		emit(8, 0, 0);
+		statement(list);
+		emit(7, 0, loopIdx*3);
+		code[jpcIdx].m = cIndex*3;
+		return;
+	}
+	if(list[lIndex].type == readsym){
+		lIndex++;
+		if(list[lIndex].type != identsym){
+			printparseerror(19);
+		}
+		int symIdx = find_sym(list, 2);
+		if(symIdx == -1){
+			if(find_sym(list, 1) == find_sym(list, 3)){
+				printparseerror(3);
+			}else{
+				printparseerror(4);
+			}
+		}
+		lIndex++;
+		//emit read, but IDK how to do thatemit()
+		emit(4,level-table[symIdx].level, table[symIdx].addr);
+		return;
+	}
+	if(list[lIndex].type == writesym){
+		
+	}
 }
-void proc_dec(){
-
+void proc_dec(lexeme *list){
+	while(list[lIndex].type == procsym){
+		lIndex++;
+		if(list[lIndex].type != identsym){
+			printparseerror(12);
+		}
+		int symidx = mult_dec(list[lIndex]);
+		if(symidx != -1){
+			printparseerror(13);
+		}
+		addToSymbolTable(3, list[lIndex].name, 0, level, 0, 0);
+		lIndex++;
+		if(list[lIndex].type == semicolonsym){
+			printparseerror(14);
+		}
+		lIndex++;
+		block(list);
+		if(list[lIndex].type != semicolonsym){
+			printparseerror(15);
+		}
+		lIndex++;
+		emit(2,0,0);
+	}
 }
-int var_dec(){
-
+int var_dec(lexeme *list){
+	int numVars = 0;
+	if(list[lIndex].type == varsym){
+		do{
+			numVars++;
+			lIndex++;
+			if(list[lIndex].type == varsym){
+				printparseerror(8);
+			}
+			int symidx = mult_dec(list[lIndex]);
+			if(symidx != -1){
+				printparseerror(9);
+			}
+			if(level==0){
+				addToSymbolTable(2, list[lIndex].name, 0, level, numVars-1, 0);
+			}else{
+				addToSymbolTable(2, list[lIndex].name, 0, level, numVars+2, 0);
+			}
+			lIndex++;
+		}while (list[lIndex].type == commasym);
+		if(list[lIndex].type != semicolonsym){
+			if(list[lIndex].type == identsym){
+				printparseerror(10);
+			}else{
+				printparseerror(11);
+			}
+		}
+		lIndex++;
+	}
+	return numVars;
 }
 void const_dec(lexeme *list){
 	if(list[lIndex].type == constsym){
@@ -69,6 +210,7 @@ void const_dec(lexeme *list){
 			tIndex++;
 			lIndex++;
 		}while(list[lIndex].type == commasym);
+		lIndex++;
 		if(list[lIndex].type != semicolonsym){
 			if(list[lIndex].type == identsym){
 				printparseerror(6);
@@ -76,21 +218,22 @@ void const_dec(lexeme *list){
 				printparseerror(7);
 			}
 		}
+		lIndex++;
 	}
 }
 void block(lexeme *list){
 	level += 1;
 	int procedureIndex = tIndex-1;
 	const_dec(list);
-	int x = var_dec();
-	proc_dec();
+	int x = var_dec(list);
+	proc_dec(list);
 	table[procedureIndex].addr = lIndex*3;
 	if (level == 0){
 		emit(6,0,x);
 	}else{
 		emit(6,0,x+3);
 	}
-	statement();
+	statement(list);
 	mark();
 	level-=1;
 }
