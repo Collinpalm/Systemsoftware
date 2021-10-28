@@ -398,12 +398,12 @@ void program(lexeme *list){
 		printparseerror(1);
 	}
 	emit(9,0,3);
-	/*
-	for(int i = 0;i < sizeof(code);i++){
-		if(code[i].opcode ){
-
+	
+	for(int i = 0;i < cIndex;i++){
+		if(code[i].opcode == 5){
+			code[i].m = table[code[i].m].addr;
 		}
-	}*/
+	}
 	code[0].m = table[0].addr;
 }
 
