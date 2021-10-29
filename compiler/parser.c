@@ -71,7 +71,7 @@ void factor(lexeme *list){
 		int symIdx_const = find_sym(list, 1);
 		if(symIdx_var == -1 && symIdx_const == -1){
 			if(find_sym(list, 3) != -1){
-				printparseerror(18);
+				printparseerror(11);
 				exit(0);
 			}else{
 				printparseerror(19);
@@ -226,6 +226,7 @@ void statement(lexeme *list){
 				printparseerror(15);
 				exit(0);
 			}else{
+				printf("%d", lIndex);
 				printparseerror(16);
 				exit(0);
 			}
@@ -302,8 +303,8 @@ void statement(lexeme *list){
 		lIndex++;
 		int symIdx = find_sym(list, 3);
 		if(symIdx == -1){
-			if(find_sym(list, 1) == find_sym(list, 3)){
-				printparseerror(3);
+			if(find_sym(list, 1) != find_sym(list, 2)){
+				printparseerror(7);
 				exit(0);
 			}else{
 				printparseerror(7);
@@ -318,7 +319,7 @@ void proc_dec(lexeme *list){
 	while(list[lIndex].type == procsym){
 		lIndex++;
 		if(list[lIndex].type != identsym){
-			printparseerror(7);
+			printparseerror(4);
 			exit(0);
 		}
 		int symidx = mult_dec(list);
@@ -329,13 +330,13 @@ void proc_dec(lexeme *list){
 		addToSymbolTable(3, list[lIndex].name, 0, level, 0, 0);
 		lIndex++;
 		if(list[lIndex].type != semicolonsym){
-			printparseerror(14);
+			printparseerror(4);
 			exit(0);
 		}
 		lIndex++;
 		block(list);
 		if(list[lIndex].type != semicolonsym){
-			printparseerror(15);
+			printparseerror(14);
 			exit(0);
 		}
 		lIndex++;
@@ -366,10 +367,10 @@ int var_dec(lexeme *list){
 		}while (list[lIndex].type == commasym);
 		if(list[lIndex].type != semicolonsym){
 			if(list[lIndex].type == identsym){
-				printparseerror(13);
+				printparseerror(14);
 				exit(0);
 			}else{
-				printparseerror(14);
+				printparseerror(13);
 				exit(0);
 			}
 		}
@@ -409,10 +410,10 @@ void const_dec(lexeme *list){
 		lIndex++;
 		if(list[lIndex].type != semicolonsym){
 			if(list[lIndex].type == identsym){
-				printparseerror(13);
+				printparseerror(14);
 				exit(0);
 			}else{
-				printparseerror(14);
+				printparseerror(13);
 				exit(0);
 			}
 		}
