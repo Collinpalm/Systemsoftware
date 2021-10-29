@@ -220,9 +220,9 @@ void statement(lexeme *list){
 		do{
 			lIndex++;
 			statement(list);
-		}while(list[lIndex].type == commasym);
+		}while(list[lIndex].type == semicolonsym);
 		if(list[lIndex].type != endsym){
-			if(list[lIndex].type == (identsym || beginsym || ifsym || whilesym || readsym || writesym || callsym)){
+			if(list[lIndex].type == identsym || list[lIndex].type == beginsym || list[lIndex].type == ifsym || list[lIndex].type == whilesym || list[lIndex].type == readsym || list[lIndex].type == writesym || list[lIndex].type == callsym){
 				printparseerror(15);
 				exit(0);
 			}else{
@@ -328,7 +328,7 @@ void proc_dec(lexeme *list){
 		}
 		addToSymbolTable(3, list[lIndex].name, 0, level, 0, 0);
 		lIndex++;
-		if(list[lIndex].type == semicolonsym){
+		if(list[lIndex].type != semicolonsym){
 			printparseerror(14);
 			exit(0);
 		}
@@ -348,7 +348,7 @@ int var_dec(lexeme *list){
 		do{
 			numVars++;
 			lIndex++;
-			if(list[lIndex].type == varsym){
+			if(list[lIndex].type != identsym){
 				printparseerror(3);
 				exit(0);
 			}
@@ -420,7 +420,7 @@ void const_dec(lexeme *list){
 	}
 }
 void block(lexeme *list){
-	level += 1;
+	level ++;
 	int procedureIndex = tIndex-1;
 	const_dec(list);
 	int x = var_dec(list);
@@ -436,7 +436,6 @@ void block(lexeme *list){
 	level-=1;
 }
 void program(lexeme *list){
-	printf("inside program");
 	lIndex = 0;
 	emit(7, 0, 0);
 	addToSymbolTable(3, "main", 0, 0, 0, 0);
@@ -459,16 +458,20 @@ void program(lexeme *list){
 
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
-	printf("main");
-	code = NULL;
 	level = 0;
 	lIndex = 0;
 	tIndex = 0;
 	cIndex = 0;
-	code = calloc(MAX_CODE_LENGTH, sizeof(instruction));
-	table = calloc(MAX_SYMBOL_COUNT, sizeof(symbol));
-
+	table = (symbol*)malloc(MAX_SYMBOL_COUNT*sizeof(symbol));
+	code = (instruction*)malloc(MAX_CODE_LENGTH*sizeof(instruction));
+	program(list);
 	code[cIndex].opcode = -1;
+	if(printTable == 1){
+		printsymboltable();
+	}
+	if(printCode == 1){
+		printassemblycode();
+	}
 	return code;
 }
 
