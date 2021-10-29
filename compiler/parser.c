@@ -37,7 +37,7 @@ void block(lexeme *list);
 
 
 int mult_dec(lexeme *list){
-	for(int j = 0; j <=cIndex;j++){
+	for(int j = 0; j <=tIndex;j++){
 		if(strcmp(table[j].name, list[lIndex].name) == 0 && table[j].level == level && table[j].mark == 0){
 			return j;
 		}
@@ -45,18 +45,12 @@ int mult_dec(lexeme *list){
 		return -1;
 }
 int find_sym(lexeme *list, int kind){
-	int i[MAX_SYMBOL_COUNT];
-	int indexCount = 0;
-	for(int j = 0; j <=cIndex;j++){
-		if(strcmp(table[j].name, list[lIndex].name) == 0 && table[j].kind == kind && table[j].mark == 0){
-			i[indexCount] = j;
-			indexCount++;
+	for(int i = tIndex; i >= 0 ; i--){
+		if(strcmp(table[i].name, list[lIndex].name) == 0 && table[i].kind == kind && table[i].mark == 0){
+			return i;
 		}
 	}
-	if(indexCount == 0){
-		return -1;
-	}
-	return i[indexCount];
+	return -1;
 }
 void mark(){
 	for(int i = cIndex; i>= 0; i--){
@@ -104,7 +98,7 @@ void factor(lexeme *list){
 }
 void term(lexeme *list){
 	factor(list);
-	while(list[lIndex].type == (multsym || divsym || modsym)){
+	while(list[lIndex].type == multsym || list[lIndex].type ==divsym || list[lIndex].type ==modsym){
 		if(list[lIndex].type == multsym){
 			lIndex++;
 			factor(list);
@@ -125,7 +119,7 @@ void expression(lexeme *list){
 		lIndex++;
 		term(list);
 		emit(2,0,1);
-		while(list[lIndex].type == (addsym || subsym)){
+		while(list[lIndex].type == addsym || list[lIndex].type ==subsym){
 			if(list[lIndex].type == addsym){
 				lIndex++;
 				term(list);
@@ -141,7 +135,7 @@ void expression(lexeme *list){
 			lIndex++;
 		}		
 		term(list);
-		while(list[lIndex].type == (addsym || subsym)){
+		while(list[lIndex].type == addsym || list[lIndex].type ==subsym){
 			if(list[lIndex].type == addsym){
 				lIndex++;
 				term(list);
@@ -153,7 +147,7 @@ void expression(lexeme *list){
 			}
 		}
 	}
-	if(list[lIndex].type == (identsym || numbersym || oddsym)){
+	if(list[lIndex].type == identsym ||list[lIndex].type == numbersym ||list[lIndex].type == oddsym){
 		printparseerror(17);
 		exit(0);
 	}
@@ -222,9 +216,8 @@ void statement(lexeme *list){
 			statement(list);
 		}while(list[lIndex].type == semicolonsym);
 		if(list[lIndex].type != endsym){
-			printf("%d", list[lIndex-2].type);
 			if(list[lIndex].type == identsym || list[lIndex].type == beginsym || list[lIndex].type == ifsym || list[lIndex].type == whilesym || list[lIndex].type == readsym || list[lIndex].type == writesym || list[lIndex].type == callsym){
-				printparseerror(15);
+				printparseerror(16);
 				exit(0);
 			}else{
 				printparseerror(16);
@@ -248,7 +241,8 @@ void statement(lexeme *list){
 		if(list[lIndex].type == elsesym){
 			int jmpIdx = cIndex;
 			emit(7, 0, jmpIdx);
-			code[jmpIdx].m = cIndex*3;
+			code[jpcIdx].m = cIndex*3;
+			lIndex++;
 			statement(list);
 			code[jmpIdx].m = cIndex*3;
 		}else{
@@ -280,7 +274,7 @@ void statement(lexeme *list){
 		}
 		int symIdx = find_sym(list, 2);
 		if(symIdx == -1){
-			if(find_sym(list, 1) == find_sym(list, 3)){
+			if(find_sym(list, 1) != find_sym(list, 3)){
 				printparseerror(20);
 				exit(0);
 			}else{
@@ -391,8 +385,7 @@ void const_dec(lexeme *list){
 				printparseerror(18);
 				exit(0);
 			}
-			addToSymbolTable(1, list[lIndex].name, list[lIndex].value, level, tIndex, 0);
-			tIndex++;
+			int namepos = lIndex;
 			lIndex++;
 			if(list[lIndex].type != assignsym){
 				printparseerror(5);
@@ -403,11 +396,9 @@ void const_dec(lexeme *list){
 				printparseerror(2);
 				exit(0);
 			}
-			addToSymbolTable(1, list[lIndex].name, list[lIndex].value, level, tIndex, 0);
-			tIndex++;
+			addToSymbolTable(1, list[namepos].name, list[lIndex].value, level, 0, 0);
 			lIndex++;
 		}while(list[lIndex].type == commasym);
-		lIndex++;
 		if(list[lIndex].type != semicolonsym){
 			if(list[lIndex].type == identsym){
 				printparseerror(14);
@@ -426,7 +417,7 @@ void block(lexeme *list){
 	const_dec(list);
 	int x = var_dec(list);
 	proc_dec(list);
-	table[procedureIndex].addr = lIndex*3;
+	table[procedureIndex].addr = cIndex*3;
 	if (level == 0){
 		emit(6,0,x);
 	}else{
@@ -437,7 +428,6 @@ void block(lexeme *list){
 	level-=1;
 }
 void program(lexeme *list){
-	lIndex = 0;
 	emit(7, 0, 0);
 	addToSymbolTable(3, "main", 0, 0, 0, 0);
 	level = -1;

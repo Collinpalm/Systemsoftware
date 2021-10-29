@@ -40,6 +40,6 @@ begin
 			else
 				call findtotal;
 			write d; write c;
-			read action
+			read action;
 		end
 end.
