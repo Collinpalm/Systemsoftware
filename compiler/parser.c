@@ -1,3 +1,11 @@
+/*
+Collin Palm and Ayden Rebhan
+Fall 2021
+Assignment 3
+*/
+
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -12,7 +20,7 @@ symbol *table;
 int tIndex;
 int level;
 int lIndex;
-
+//function prototypes because they all call on each other
 void emit(int opname, int level, int mvalue);
 void addToSymbolTable(int k, char n[], int v, int l, int a, int m);
 void printparseerror(int err_code);
@@ -34,17 +42,21 @@ void block(lexeme *list);
 
 
 
-
+//function to find the exising symbol in the table and return its position
 
 int mult_dec(lexeme *list){
+	//for loop linearly searches the table 
 	for(int j = 0; j <=tIndex;j++){
 		if(strcmp(table[j].name, list[lIndex].name) == 0 && table[j].level == level && table[j].mark == 0){
 			return j;
 		}
 	}
+	//else return -1
 		return -1;
 }
+//function to find if the symbol exists on the same lexographical level
 int find_sym(lexeme *list, int kind){
+	//uses a for loop to run from the bottom of the table to maximize the lex level
 	for(int i = tIndex; i >= 0 ; i--){
 		if(strcmp(table[i].name, list[lIndex].name) == 0 && table[i].kind == kind && table[i].mark == 0){
 			return i;
@@ -52,6 +64,7 @@ int find_sym(lexeme *list, int kind){
 	}
 	return -1;
 }
+//function to mark the symbols in the table once we go back up a lex level
 void mark(){
 	for(int i = cIndex; i>= 0; i--){
 		if(table[i].level == level){
@@ -59,6 +72,7 @@ void mark(){
 		}
 	}
 }
+//this fucntion handles cheching for proper syntax of identiies and parenthesis
 void factor(lexeme *list){
 	if(list[lIndex].type == identsym){
 		int symIdx_var = find_sym(list, 2);
@@ -96,6 +110,7 @@ void factor(lexeme *list){
 		exit(0);
 	}
 }
+//this fucntion handles the multiplication, division, and mod operators
 void term(lexeme *list){
 	factor(list);
 	while(list[lIndex].type == multsym || list[lIndex].type ==divsym || list[lIndex].type ==modsym){
@@ -114,6 +129,7 @@ void term(lexeme *list){
 		}
 	}
 }
+//this function takes care of all of the addition and subtraction
 void expression(lexeme *list){
 	if(list[lIndex].type == subsym){
 		lIndex++;
@@ -152,6 +168,7 @@ void expression(lexeme *list){
 		exit(0);
 	}
 }
+//here is where all the conditionals are hanled 
 void condition(lexeme *list){
 	if(list[lIndex].type == oddsym){
 		lIndex++;
@@ -189,6 +206,7 @@ void condition(lexeme *list){
 		}
 	}
 }
+//this function handles all the loops and action statements
 void statement(lexeme *list){
 	if(list[lIndex].type == identsym){
 		int symIdx = find_sym(list, 2);
@@ -217,7 +235,7 @@ void statement(lexeme *list){
 		}while(list[lIndex].type == semicolonsym);
 		if(list[lIndex].type != endsym){
 			if(list[lIndex].type == identsym || list[lIndex].type == beginsym || list[lIndex].type == ifsym || list[lIndex].type == whilesym || list[lIndex].type == readsym || list[lIndex].type == writesym || list[lIndex].type == callsym){
-				printparseerror(16);
+				printparseerror(15);
 				exit(0);
 			}else{
 				printparseerror(16);
@@ -242,7 +260,7 @@ void statement(lexeme *list){
 			int jmpIdx = cIndex;
 			emit(7, 0, jmpIdx);
 			code[jpcIdx].m = cIndex*3;
-			lIndex++;
+			lIndex++;//this line isnt in the pseudocode, idk if it was intentional or not, but it got us very deep into the weeds, hand mapping all the function calls and the table states
 			statement(list);
 			code[jmpIdx].m = cIndex*3;
 		}else{
@@ -309,6 +327,7 @@ void statement(lexeme *list){
 		emit(5, level-table[symIdx].level, symIdx);
 	}
 }
+//this is where we define procedures and add them to the symbol table
 void proc_dec(lexeme *list){
 	while(list[lIndex].type == procsym){
 		lIndex++;
@@ -337,6 +356,7 @@ void proc_dec(lexeme *list){
 		emit(2,0,0);
 	}
 }
+//this function handles variable declaration and ensures that proper conventions are held
 int var_dec(lexeme *list){
 	int numVars = 0;
 	if(list[lIndex].type == varsym){
@@ -372,6 +392,7 @@ int var_dec(lexeme *list){
 	}
 	return numVars;
 }
+//this function handles constant declaration and ensures that proper conventions are held
 void const_dec(lexeme *list){
 	if(list[lIndex].type == constsym){
 		do{
@@ -411,6 +432,7 @@ void const_dec(lexeme *list){
 		lIndex++;
 	}
 }
+//the main handler, this function directs the control flow
 void block(lexeme *list){
 	level ++;
 	int procedureIndex = tIndex-1;
@@ -427,6 +449,7 @@ void block(lexeme *list){
 	mark();
 	level-=1;
 }
+//main program, it handles the start and stop of the whole program
 void program(lexeme *list){
 	emit(7, 0, 0);
 	addToSymbolTable(3, "main", 0, 0, 0, 0);
@@ -449,14 +472,17 @@ void program(lexeme *list){
 
 instruction *parse(lexeme *list, int printTable, int printCode)
 {
+	//define all the values we are about to use
 	level = 0;
 	lIndex = 0;
 	tIndex = 0;
 	cIndex = 0;
 	table = (symbol*)malloc(MAX_SYMBOL_COUNT*sizeof(symbol));
 	code = (instruction*)malloc(MAX_CODE_LENGTH*sizeof(instruction));
+	//starts the parsing/code generatation
 	program(list);
 	code[cIndex].opcode = -1;
+	//if the flags are true, print the tables
 	if(printTable == 1){
 		printsymboltable();
 	}
