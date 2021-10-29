@@ -222,11 +222,11 @@ void statement(lexeme *list){
 			statement(list);
 		}while(list[lIndex].type == semicolonsym);
 		if(list[lIndex].type != endsym){
+			printf("%d", list[lIndex-2].type);
 			if(list[lIndex].type == identsym || list[lIndex].type == beginsym || list[lIndex].type == ifsym || list[lIndex].type == whilesym || list[lIndex].type == readsym || list[lIndex].type == writesym || list[lIndex].type == callsym){
 				printparseerror(15);
 				exit(0);
 			}else{
-				printf("%d", lIndex);
 				printparseerror(16);
 				exit(0);
 			}
