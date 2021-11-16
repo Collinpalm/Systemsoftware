@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "compiler.h"
 
-#define MAX_CODE_LENGTH 500
+#define MAX_CODE_LENGTH 3000
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
 	lexeme *list;
 	instruction *code;
 	int i;
+	int tokens = 0, symbols = 0, codes = 0, outputs = 0;
 	
 	if (argc < 2)
 	{
@@ -39,25 +40,43 @@ int main(int argc, char *argv[])
 	}
 	input[i] = '\0';
 	
-	list = lexanalyzer(input);
+	for (i = 2; i < argc; i++)
+	{
+		if (argv[i][1] == 'l')
+			tokens = 1;
+		else if (argv[i][1] == 's')
+			symbols = 1;
+		else if (argv[i][1] == 'a')
+			codes = 1;
+		else if (argv[i][1] == 'v')
+			outputs = 1;
+		else
+		{
+			printf("Error : unrecognized directive\n");
+			free(input);
+			return 0;
+		}
+	}
+	
+	list = lexanalyzer(input, tokens);
 	if (list == NULL)
 	{
 		free(input);
 		return 0;
 	}
 	
-	// code = parse(list);
-	// if (code == NULL)
-	// {
-	// 	free(input);
-	// 	free(list);
-	// 	return 0;
-	// }
+	code = parse(list, symbols, codes);
+	if (code == NULL)
+	{
+	 	free(input);
+	 	free(list);
+	 	return 0;
+	}
 	
-	// execute_program(code);
+	execute_program(code, outputs);
 	
 	free(input);
 	free(list);
-	// free(code);
+	free(code);
 	return 0;
 }

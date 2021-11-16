@@ -228,13 +228,13 @@ void statement(lexeme *list){
 		emit(4,level-table[symIdx].level, table[symIdx].addr);
 		return;		
 	}
-	if(list[lIndex].type == beginsym){
+	if(list[lIndex].type == dosym){
 		do{
 			lIndex++;
 			statement(list);
 		}while(list[lIndex].type == semicolonsym);
-		if(list[lIndex].type != endsym){
-			if(list[lIndex].type == identsym || list[lIndex].type == beginsym || list[lIndex].type == ifsym || list[lIndex].type == whilesym || list[lIndex].type == readsym || list[lIndex].type == writesym || list[lIndex].type == callsym){
+		if(list[lIndex].type != odsym){
+			if(list[lIndex].type == identsym || list[lIndex].type == dosym || list[lIndex].type == whensym || list[lIndex].type == whilesym || list[lIndex].type == readsym || list[lIndex].type == writesym || list[lIndex].type == callsym){
 				printparseerror(15);
 				exit(0);
 			}else{
@@ -245,18 +245,18 @@ void statement(lexeme *list){
 		lIndex++;
 		return;
 	}
-	if(list[lIndex].type == ifsym){
+	if(list[lIndex].type == whensym){
 		lIndex++;
 		condition(list);
 		int jpcIdx = cIndex;
 		emit(8, 0, jpcIdx);
-		if(list[lIndex].type != thensym){
+		if(list[lIndex].type != dosym){
 			printparseerror(8);
 			exit(0);
 		}
 		lIndex++;
 		statement(list);
-		if(list[lIndex].type == elsesym){
+		if(list[lIndex].type == elsedosym){
 			int jmpIdx = cIndex;
 			emit(7, 0, jmpIdx);
 			code[jpcIdx].m = cIndex*3;
