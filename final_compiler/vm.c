@@ -159,8 +159,8 @@ int main(int argc, char **argv) {
 				switch (IR.M) {
 					case 0: // RET
 						SP = BP + 1;
-						BP = pas[SP - 2];
-						PC = pas[SP - 3];
+						BP = pas[SP - 3];
+						PC = pas[SP - 4];
 						break;
 					case 1: // NEG
 						if(BP == GP){
@@ -308,9 +308,10 @@ int main(int argc, char **argv) {
 				}
 				break;
 			case 5: // CAL 
-				pas[SP-1] = base(IR.L, BP, pas);
-				pas[SP-2] = BP;
-				pas[SP-3] = PC;
+				pas[SP-1] = 0;
+				pas[SP-2] = base(IR.L, BP, pas);;
+				pas[SP-3] = BP;
+				pas[SP-4] = PC;
 				BP = SP - 1;
 				PC = IR.M;
 				break;
