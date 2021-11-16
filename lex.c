@@ -277,7 +277,7 @@ char* getnum(char* input){
 		for(int i = 0; i< count-initial; i++){
 			str[i] = input[initial+i];
 		}
-		return (char*) str;
+		return str;
 	}
 	//if the word is too long print error, and set flag
 	printlexerror(3);
@@ -418,9 +418,7 @@ lexeme *lexanalyzer(char *input){
 					break;
 				case '/':
 					if(input[count+1] == '/'){
-						while(input[count] != '\0'){
-							count++;
-						}
+						//call function to run to the next newline character
 					}else if(list[lex_index-1].type == identsym||numbersym){
 						list[lex_index].type = divsym;
 						strcpy(list[lex_index].name, "/");
