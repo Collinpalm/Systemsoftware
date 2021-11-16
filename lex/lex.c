@@ -271,13 +271,13 @@ char* getnum(char* input){
 	while(isdigit(input[count])){
 		count++;
 	}
-	char str[count-initial];
+	char* str = malloc(sizeof(char)* (count-initial));
 	//if the length of the digit is short enough count it and return it
 	if(count-initial < MAX_NUMBER_LEN){
 		for(int i = 0; i< count-initial; i++){
 			str[i] = input[initial+i];
 		}
-		return (char*) str;
+		return str;
 	}
 	//if the word is too long print error, and set flag
 	printlexerror(3);
