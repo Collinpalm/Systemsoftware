@@ -244,9 +244,7 @@ int getnum(char* input){
 		}
 		return atoi(str);
 	}
-	//if the word is too long print error, and set flag
-	printlexerror(3);
-	flag = 1;
+	//if the word is too long return an impossible value
 	return -1;
 	
 }
