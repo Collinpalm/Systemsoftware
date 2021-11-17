@@ -9,6 +9,7 @@ PROFESSOR= EURIPIDES MONTAGNE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "compiler.h"
 
 #define MAX_PAS_LENGTH 500
 
@@ -26,19 +27,26 @@ struct Instruction {
 int base(int L, int BP, int pas[]);
 void print_execution(int line, Instruction *IR, int PC, int BP, int SP, int DP, int *pas, int GP);
 
-void execute_program(Instruction* code, int printFlag) {
+void execute_program(instruction* code, int printFlag) {
 	int pas [MAX_PAS_LENGTH];
 	for (int i = 0; i < MAX_PAS_LENGTH; i++){
 		pas[i] = 0;
 	}
 
 	int Halt = 0, PC = 0, SP = 0, BP = 0, IC = 0, DP = 0, GP = 0, FREE = 0;
-	int numLines; 	// Holds how many lines there are in the file
-	
+	int numLines = 0; 	// Holds how many lines there are in the file
+	int codeLen = sizeof(code)/sizeof(instruction);
 	Instruction IR;
-
+	//load the program into pas
+	while(IC < codeLen){
+		pas[IC] = code[numLines].opcode;
+		pas[IC+1] = code[numLines].l;
+		pas[IC+2] = code[numLines].m;
+		IC+=3;
+		numLines++;
+	}
 	
-	IC += 3;
+	
 	//set up the process address space
 	GP = IC;
 	DP = IC-1;
@@ -48,8 +56,11 @@ void execute_program(Instruction* code, int printFlag) {
 	SP = MAX_PAS_LENGTH;
 
 	//set up boilerplate output
-	printf("\n            \t\tPC\tBP\tSP\tDP\tdata\n");
-	printf("Initial values\t\t%d\t%d\t%d\t%d		\n", PC, BP, SP, DP);
+	if(printFlag != 0){
+		printf("\n            \t\tPC\tBP\tSP\tDP\tdata\n");
+		printf("Initial values\t\t%d\t%d\t%d\t%d		\n", PC, BP, SP, DP);
+	}
+	
 	
 	while (Halt == 0) {
 		
@@ -357,7 +368,10 @@ void execute_program(Instruction* code, int printFlag) {
 				break;
 		}
 		//print function
-		print_execution(IR.linecount, &IR, PC, BP, SP, DP, pas, GP);
+		if(printFlag != 0){
+			print_execution(IR.linecount, &IR, PC, BP, SP, DP, pas, GP);
+		}
+		
 
 		
 	}	
