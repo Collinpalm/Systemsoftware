@@ -22,7 +22,7 @@
 
 lexeme *list;
 int lex_index;
-int count, flag;
+int count, flag, varCount;
 char* varnames[MAX_NUMBER_TOKENS];
 
 void printlexerror(int type);
@@ -74,7 +74,7 @@ int checkvalid(char* word){
 		return 1;
 	}else{
 		//checks if the variable name has been used, if so it returns that its valid
-		for(int i = 0; i < MAX_NUMBER_TOKENS; i++){
+		for(int i = 0; i < varCount; i++){
 			if(varnames[i]==NULL){
 				continue;
 			}else if(strcmp(word, varnames[i]) == 0){
@@ -102,6 +102,7 @@ char* wordRunner(char *input){
 	while(isalpha(input[count])){
 		wordlen++;
 		count++;
+		printf("%c", input[count]);
 	}
 	
 	//if the word is too long 
@@ -274,12 +275,19 @@ void wordcheck(char *input){
 		lex_index++;
 	}else{
 		if(checkvalid(word) == 0){
+			printf("yo\n\n");
 			list[lex_index].type = identsym;
 			strcpy(list[lex_index].name, word);
 			list[lex_index].value = 14;
 			lex_index++;
+			strcpy(varnames[varCount], word);
+			varCount++;
 		}else if(checkvalid(word) == 2){
-			
+			printf("yo");
+			list[lex_index].type = identsym;
+			strcpy(list[lex_index].name, word);
+			list[lex_index].value = 14;
+			lex_index++;
 		}
 	}
 
@@ -312,6 +320,7 @@ lexeme *lexanalyzer(char *input){
 	lex_index = 0;//set the list counter to the begining
 	count = 0;//set the input counter to the begining
 	flag = 0;//set the flag to no error(1-error, 0-noerror)
+	varCount = 0;
 	list = calloc(sizeof(lexeme), MAX_NUMBER_TOKENS);
 	//iterably loop through the input array
 	
@@ -332,6 +341,7 @@ lexeme *lexanalyzer(char *input){
 		}else if(isalpha(input[count]) != 0){
 			wordcheck(input);
 			count++;
+			printf("%c", input[count]);
 		//check if its one of the char operators
 		}else{
 			switch(input[count]){
@@ -430,7 +440,6 @@ lexeme *lexanalyzer(char *input){
 						count+=2;
 					}else{
 						printf("%c %c %c %c", input[count-3], input[count-2], input[count-1], input[count]);
-						sleep(2);
 						printlexerror(6);
 						flag = 1;
 					}
