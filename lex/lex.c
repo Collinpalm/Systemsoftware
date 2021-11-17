@@ -354,6 +354,8 @@ lexeme *lexanalyzer(char *input){
 						list[lex_index].value = 23;
 						lex_index++;
 						count+=2;
+					}else{
+						printlexerror(1);
 					}
 					break;
 				case '=':
