@@ -11,6 +11,7 @@ echo "Compiles"
 
 echo -n "Test 1 : "
 ./a.out test1.txt > output.txt
+
 executed=$?
 if [[ $executed !=  0 ]]; then
 	echo ":'("
