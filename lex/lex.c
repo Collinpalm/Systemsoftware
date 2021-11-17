@@ -102,7 +102,6 @@ char* wordRunner(char *input){
 	while(isalpha(input[count])){
 		wordlen++;
 		count++;
-		printf("%c", input[count]);
 	}
 	
 	//if the word is too long 
@@ -275,7 +274,6 @@ void wordcheck(char *input){
 		lex_index++;
 	}else{
 		if(checkvalid(word) == 0){
-			printf("yo\n\n");
 			list[lex_index].type = identsym;
 			strcpy(list[lex_index].name, word);
 			list[lex_index].value = 14;
@@ -283,7 +281,6 @@ void wordcheck(char *input){
 			strcpy(varnames[varCount], word);
 			varCount++;
 		}else if(checkvalid(word) == 2){
-			printf("yo");
 			list[lex_index].type = identsym;
 			strcpy(list[lex_index].name, word);
 			list[lex_index].value = 14;
@@ -325,8 +322,6 @@ lexeme *lexanalyzer(char *input){
 	//iterably loop through the input array
 	
 	while(input[count] != '\0'){
-		printf("loop count: %d    ", count);
-		printf("%c\n", input[count]);
 		//check if its a control character and skip it
 		if(iscntrl(input[count])){
 			count++;
@@ -339,7 +334,7 @@ lexeme *lexanalyzer(char *input){
 		//check if its an alphabet character and check for word
 		}else if(isalpha(input[count]) != 0){
 			wordcheck(input);
-			printf("%c", input[count]);
+
 		//check if its one of the char operators
 		}else{
 			switch(input[count]){
@@ -437,7 +432,6 @@ lexeme *lexanalyzer(char *input){
 						lex_index++;
 						count+=2;
 					}else{
-						printf("%c %c %c %c", input[count-3], input[count-2], input[count-1], input[count]);
 						printlexerror(6);
 						flag = 1;
 					}
