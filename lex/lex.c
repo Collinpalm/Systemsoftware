@@ -432,7 +432,7 @@ lexeme *lexanalyzer(char *input){
 					break;
 				case '!':
 					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym)){
-						list[lex_index].type = leqsym;
+						list[lex_index].type = neqsym;
 						strcpy(list[lex_index].name, "!=");
 						list[lex_index].value = 23;
 						lex_index++;
@@ -445,7 +445,7 @@ lexeme *lexanalyzer(char *input){
 					break;
 				case '=':
 					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym)){
-						list[lex_index].type = leqsym;
+						list[lex_index].type = eqlsym;
 						strcpy(list[lex_index].name, "==");
 						list[lex_index].value = 22;
 						lex_index++;
@@ -484,7 +484,7 @@ lexeme *lexanalyzer(char *input){
 					break;
 				case '*':
 					if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
-						list[lex_index].type = modsym;
+						list[lex_index].type = multsym;
 						strcpy(list[lex_index].name, "*");
 						list[lex_index].value = 19;
 						lex_index++;
@@ -496,7 +496,7 @@ lexeme *lexanalyzer(char *input){
 					break;
 				case '-':
 					if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
-						list[lex_index].type = modsym;
+						list[lex_index].type = subsym;
 						strcpy(list[lex_index].name, "-");
 						list[lex_index].value = 18;
 						lex_index++;
@@ -508,7 +508,7 @@ lexeme *lexanalyzer(char *input){
 					break;
 				case '+':
 					if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
-						list[lex_index].type = modsym;
+						list[lex_index].type = addsym;
 						strcpy(list[lex_index].name, "+");
 						list[lex_index].value = 17;
 						lex_index++;
