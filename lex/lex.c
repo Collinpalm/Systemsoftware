@@ -115,7 +115,7 @@ char* wordRunner(char *input){
 	
 	//if the word is too long 
 	if(wordlen > MAX_IDENT_LEN){
-		printlexerror(3);
+		printlexerror(4);
 		flag = 1;
 	}
 	//pull the word out
