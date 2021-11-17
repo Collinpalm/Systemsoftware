@@ -26,8 +26,7 @@ struct Instruction {
 int base(int L, int BP, int pas[]);
 void print_execution(int line, Instruction *IR, int PC, int BP, int SP, int DP, int *pas, int GP);
 
-int main(int argc, char **argv) {
-	FILE * input = fopen(argv[1], "r");
+void execute_program(Instruction* code, int printFlag) {
 	int pas [MAX_PAS_LENGTH];
 	for (int i = 0; i < MAX_PAS_LENGTH; i++){
 		pas[i] = 0;
@@ -38,13 +37,7 @@ int main(int argc, char **argv) {
 	
 	Instruction IR;
 
-	IC = -3;
-	// Read in the information from the file into mem
-
-	while(!feof(input)) {
-		IC +=3;
-		fscanf(input,"%d %d %d", &(pas[IC]), &(pas[IC+1]), &(pas[IC+2]));
-	}
+	
 	IC += 3;
 	//set up the process address space
 	GP = IC;
@@ -53,9 +46,6 @@ int main(int argc, char **argv) {
 	BP = IC;
 	PC = 0;
 	SP = MAX_PAS_LENGTH;
-
-	// Close input file
-	fclose(input);
 
 	//set up boilerplate output
 	printf("\n            \t\tPC\tBP\tSP\tDP\tdata\n");
