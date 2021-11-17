@@ -9,8 +9,8 @@ fi
 
 echo "Compiles"
 
-echo -n "Basic Test : "
-./a.out test.txt -a -s > output.txt
+echo -n "Test : "
+./a.out test.txt -a -s -v
 executed=$?
 if [[ $executed !=  0 ]]; then
 	echo ":'("

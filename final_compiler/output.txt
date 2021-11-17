@@ -1,0 +1,64 @@
+Symbol Table:
+Kind | Name        | Value | Level | Address | Mark
+---------------------------------------------------
+   3 |        main |     0 |     0 |     3 |     1
+   2 |           x |     0 |     0 |     0 |     1
+   2 |           w |     0 |     0 |     1 |     1
+Line	OP Code	OP Name	L	M
+0	7	JMP	0	3
+1	6	INC	0	2
+2	1	LIT	0	4
+3	4	STO	0	0
+4	9	RED	0	2
+5	4	STO	0	1
+6	3	LOD	0	1
+7	3	LOD	0	0
+8	2	GTR	0	12
+9	8	JPC	0	45
+10	3	LOD	0	1
+11	1	LIT	0	1
+12	2	ADD	0	2
+13	4	STO	0	1
+14	7	JMP	0	51
+15	3	LOD	0	0
+16	4	STO	0	1
+17	3	LOD	0	1
+18	9	WRT	0	1
+19	9	HAL	0	3
+
+7
+6
+1
+4
+9
+4
+3
+3
+2
+8
+3
+1
+2
+4
+7
+3
+4
+3
+9
+9
+0 7
+3 6
+6 1
+9 4
+12 9Please Enter an Integer: 
+15 4
+18 3
+21 3
+24 2
+27 8
+45 3
+48 4
+51 3
+54 9Top of Stack Value: 4
+
+57 9
