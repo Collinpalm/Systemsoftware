@@ -242,6 +242,11 @@ int getnum(char* input){
 		for(int i = 0; i< count-initial; i++){
 			str[i] = input[initial+i];
 		}
+		if(isalpha(input[count+1]) != 0){
+			printlexerror(2);
+			flag = 1;
+			return 0;
+		}
 		return atoi(str);
 	}
 	//if the word is too long return an impossible value
