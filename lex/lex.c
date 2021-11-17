@@ -44,41 +44,41 @@ void runtonewline(char* input){
 
 //checks if a word is not reserved
 int checkvalid(char* word){
-	if(strcmp(word, "const")){
+	if(strcmp(word, "const") == 0){
 		return 1;
-	}else if(strcmp(word, "var")){
+	}else if(strcmp(word, "var") == 0){
 		return 1;
-	}else if(strcmp(word, "procedure")){
+	}else if(strcmp(word, "procedure") == 0){
 		return 1;
-	}else if(strcmp(word, "begin")){
+	}else if(strcmp(word, "begin") == 0){
 		return 1;
-	}else if(strcmp(word, "end")){
+	}else if(strcmp(word, "end") == 0){
 		return 1;
-	}else if(strcmp(word, "while")){
+	}else if(strcmp(word, "while") == 0){
 		return 1;
-	}else if(strcmp(word, "do")){
+	}else if(strcmp(word, "do") == 0){
 		return 1;
-	}else if(strcmp(word, "if")){
+	}else if(strcmp(word, "if") == 0){
 		return 1;
-	}else if(strcmp(word, "then")){
+	}else if(strcmp(word, "then") == 0){
 		return 1;
-	}else if(strcmp(word, "else")){
+	}else if(strcmp(word, "else") == 0){
 		return 1;
-	}else if(strcmp(word, "call")){
+	}else if(strcmp(word, "call") == 0){
 		return 1;
-	}else if(strcmp(word, "write")){
+	}else if(strcmp(word, "write") == 0){
 		return 1;
-	}else if(strcmp(word, "read")){
+	}else if(strcmp(word, "read") == 0){
 		return 1;
-	}else if(strcmp(word, "odd")){
+	}else if(strcmp(word, "odd") == 0){
 		return 1;
 	}else{
 		//checks if the variable name has been used, if so it returns that its valid
 		for(int i = 0; i < MAX_NUMBER_TOKENS; i++){
 			if(varnames[i]==NULL){
 				break;
-			}else if(strcmp(word, varnames[i])){
-				return 0;
+			}else if(strcmp(word, varnames[i]) == 0){
+				return 1;
 			}
 		}
 	}
@@ -95,17 +95,21 @@ void cutwhite(char* input){
 char* wordRunner(char *input){
 	int wordlen = 0;
 	int wcount = count;
+	if(input[count] == ' '){
+		cutwhite(input);
+	}
 	//find how long the word is based on if it detects an alphabet character
 	while(isalpha(input[count])){
 		wordlen++;
 		count++;
-		printf("%c\n", input[count-1]);
 	}
+	
 	//if the word is too long 
 	if(wordlen > MAX_IDENT_LEN){
 		return NULL;
 	}
 	//pull the word out
+	
 	char *word = malloc(sizeof(char)*wordlen);
 	for(int i = 0; i < wordlen; i++){
 		word[i] = input[wcount+i]; 
@@ -117,16 +121,16 @@ void wordcheck(char *input){
 	//get the word
 	char* word = wordRunner(input);
 	//null check
+	
 	if(word == NULL){
-		printf("null");
 		printlexerror(2);
 		flag = 1;
 		return;
 	}
-	printf("%s", word);
+	
 	//if\else to find the word
+	
 	if(strcmp(word, "const") == 0){
-		printf("const");
 		//add the reserved word to the list
 		list[lex_index].type = constsym;
 		strcpy(list[lex_index].name, "const");
@@ -306,6 +310,7 @@ lexeme *lexanalyzer(char *input){
 	lex_index = 0;//set the list counter to the begining
 	count = 0;//set the input counter to the begining
 	flag = 0;//set the flag to no error(1-error, 0-noerror)
+	list = calloc(sizeof(lexeme), MAX_NUMBER_TOKENS);
 	//iterably loop through the input array
 	
 	while(input[count] != '\0'){
