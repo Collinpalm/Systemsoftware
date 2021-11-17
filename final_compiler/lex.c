@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <unistd.h>
 #include "compiler.h"
 #define MAX_NUMBER_TOKENS 500
 #define MAX_IDENT_LEN 11
@@ -21,54 +22,70 @@
 
 lexeme *list;
 int lex_index;
-int count, flag;
-char* varnames[MAX_NUMBER_TOKENS];
+int count, flag, varCount;
+char varnames[MAX_NUMBER_TOKENS][MAX_IDENT_LEN];
 
 void printlexerror(int type);
 void printtokens();
 char* wordRunner(char *input);
-char* wordcheck(char* input);
+void wordcheck(char* input);
 void cutwhite(char* input);
 int checkvalid(char* word);
-char* getnum(char* input);
+int getnum(char* input);
+void runtonewline(char* input);
+void addtovarlist(char* word);
+
+//add as used word
+void addtovarlist(char* word){
+	strcpy(varnames[varCount], word);
+	varCount++;
+}
+
+
+//run to new line
+void runtonewline(char* input){
+	while(!iscntrl(input[count])){
+		count++;
+	}
+}
 
 //checks if a word is not reserved
 int checkvalid(char* word){
-	if(strcmp(word, "const")){
+	if(strcmp(word, "const") == 0){
 		return 1;
-	}else if(strcmp(word, "var")){
+	}else if(strcmp(word, "var") == 0){
 		return 1;
-	}else if(strcmp(word, "procedure")){
+	}else if(strcmp(word, "procedure") == 0){
 		return 1;
-	}else if(strcmp(word, "begin")){
+	}else if(strcmp(word, "begin") == 0){
 		return 1;
-	}else if(strcmp(word, "end")){
+	}else if(strcmp(word, "end") == 0){
 		return 1;
-	}else if(strcmp(word, "while")){
+	}else if(strcmp(word, "while") == 0){
 		return 1;
-	}else if(strcmp(word, "do")){
+	}else if(strcmp(word, "do") == 0){
 		return 1;
-	}else if(strcmp(word, "if")){
+	}else if(strcmp(word, "if") == 0){
 		return 1;
-	}else if(strcmp(word, "then")){
+	}else if(strcmp(word, "then") == 0){
 		return 1;
-	}else if(strcmp(word, "else")){
+	}else if(strcmp(word, "else") == 0){
 		return 1;
-	}else if(strcmp(word, "call")){
+	}else if(strcmp(word, "call") == 0){
 		return 1;
-	}else if(strcmp(word, "write")){
+	}else if(strcmp(word, "write") == 0){
 		return 1;
-	}else if(strcmp(word, "read")){
+	}else if(strcmp(word, "read") == 0){
 		return 1;
-	}else if(strcmp(word, "odd")){
+	}else if(strcmp(word, "odd") == 0){
 		return 1;
 	}else{
 		//checks if the variable name has been used, if so it returns that its valid
-		for(int i = 0; i < MAX_NUMBER_TOKENS; i++){
+		for(int i = 0; i < varCount; i++){
 			if(varnames[i]==NULL){
-				break;
-			}else if(strcmp(word, varnames[i])){
-				return 0;
+				continue;
+			}else if(strcmp(word, varnames[i]) == 0){
+				return 2;
 			}
 		}
 	}
@@ -83,171 +100,113 @@ void cutwhite(char* input){
 }
 //finds the word in the input array starting at count
 char* wordRunner(char *input){
-	int wordlen = 0;
-	int wcount = count;
+	
 	if(input[count] == ' '){
 		cutwhite(input);
 	}
+	int wordlen = 0;
+	int wcount = count;
 	//find how long the word is based on if it detects an alphabet character
-	while(isalpha(input[wcount])){
+	while(isalpha(input[count]) != 0 || isdigit(input[count])){
 		wordlen++;
-		wcount++;
+		count++;
+		
 	}
+	
 	//if the word is too long 
-	if(wcount > MAX_IDENT_LEN){
-		return NULL;
+	if(wordlen > MAX_IDENT_LEN){
+		printlexerror(4);
+		flag = 1;
 	}
 	//pull the word out
-	char *word[wordlen];
-	word[wordlen] = '\0';
+	
+	char *word = malloc(sizeof(char)*wordlen);
 	for(int i = 0; i < wordlen; i++){
-		word[i] = &input[count+i]; 
+		word[i] = input[wcount+i]; 
 	}
-	return *word;
+	return word;
 }
 //check if the word is reserved and do the thing for the word
-char* wordcheck(char *input){
+void wordcheck(char *input){
 	//get the word
 	char* word = wordRunner(input);
+	//null check
+	
+	if(word == NULL){
+		printlexerror(2);
+		flag = 1;
+		return;
+	}
+	
 	//if\else to find the word
-	if(strcmp(word, "const")){
+	
+	if(strcmp(word, "const") == 0){
 		//add the reserved word to the list
 		list[lex_index].type = constsym;
 		strcpy(list[lex_index].name, "const");
 		list[lex_index].value = 1;
 		lex_index++;
-		//add the identifier to the list
-		list[lex_index].type = identsym;
-		char* name = wordRunner(input);
-		//if an error print it and set the flag
-		if(name == NULL){
-			printlexerror(4);
-			flag = 1;
-		}else if(checkvalid(name)==1){
-			printlexerror(2);
-			flag = 1;
-		}
-		lex_index++;
-	}else if(strcmp(word, "var")){
+	}else if(strcmp(word, "var") == 0){
 		list[lex_index].type = varsym;
 		strcpy(list[lex_index].name, "var");
 		list[lex_index].value = 2;
 		lex_index++;
-		list[lex_index].type = identsym;
-		char* name = wordRunner(input);
-		if(name == NULL){
-			printlexerror(4);
-			flag = 1;
-		}else if(checkvalid(name)==1){
-			printlexerror(2);
-			flag = 1;
-		}
-		strcpy(list[lex_index].name, name);
-		list[lex_index].value = 14;
-		lex_index++;
-	}else if(strcmp(word, "procedure")){
+	}else if(strcmp(word, "procedure") == 0){
 		list[lex_index].type = procsym;
 		strcpy(list[lex_index].name, "procedure");
 		list[lex_index].value = 3;
 		lex_index++;
-		list[lex_index].type = identsym;
-		char* name = wordRunner(input);
-		if(name == NULL){
-			flag = 1;
-		}else if(checkvalid(name)==1){
-			printlexerror(2);
-			flag = 1;
-		}
-		strcpy(list[lex_index].name, name);
-		list[lex_index].value = 14;
-		lex_index++;
-	}else if(strcmp(word, "begin")){
+	}else if(strcmp(word, "begin") == 0){
 		list[lex_index].type = beginsym;
 		strcpy(list[lex_index].name, "begin");
 		list[lex_index].value = 4;
 		lex_index++;
-	}else if(strcmp(word, "end")){
+	}else if(strcmp(word, "end") == 0){
 		list[lex_index].type = endsym;
 		strcpy(list[lex_index].name, "end");
 		list[lex_index].value = 5;
 		lex_index++;
-	}else if(strcmp(word, "while")){
+	}else if(strcmp(word, "while") == 0){
 		list[lex_index].type = whilesym;
 		strcpy(list[lex_index].name, "while");
 		list[lex_index].value = 6;
 		lex_index++;
-	}else if(strcmp(word, "do")){
+	}else if(strcmp(word, "do") == 0){
 		list[lex_index].type = dosym;
 		strcpy(list[lex_index].name, "do");
 		list[lex_index].value = 7;
 		lex_index++;
-	}else if(strcmp(word, "if")){
+	}else if(strcmp(word, "if") == 0){
 		list[lex_index].type = ifsym;
 		strcpy(list[lex_index].name, "if");
 		list[lex_index].value = 8;
 		lex_index++;
-	}else if(strcmp(word, "then")){
+	}else if(strcmp(word, "then") == 0){
 		list[lex_index].type = thensym;
 		strcpy(list[lex_index].name, "then");
 		list[lex_index].value = 9;
 		lex_index++;
-	}else if(strcmp(word, "else")){
+	}else if(strcmp(word, "else") == 0){
 		list[lex_index].type = elsesym;
 		strcpy(list[lex_index].name, "else");
 		list[lex_index].value = 10;
 		lex_index++;
-	}else if(strcmp(word, "call")){
+	}else if(strcmp(word, "call") == 0){
 		list[lex_index].type = callsym;
 		strcpy(list[lex_index].name, "call");
 		list[lex_index].value = 11;
 		lex_index++;
-		list[lex_index].type = identsym;
-		char* name = wordRunner(input);
-		if(name == NULL){
-			printlexerror(4);
-			flag = 1;
-		}else if(checkvalid(name)==1){
-			printlexerror(2);
-			flag = 1;
-		}
-		strcpy(list[lex_index].name, name);
-		list[lex_index].value = 14;
-		lex_index++;
-	}else if(strcmp(word, "write")){
+	}else if(strcmp(word, "write") == 0){
 		list[lex_index].type = writesym;
 		strcpy(list[lex_index].name, "write");
 		list[lex_index].value = 12;
 		lex_index++;
-		list[lex_index].type = identsym;
-		char* name = wordRunner(input);
-		if(name == NULL){
-			printlexerror(4);
-			flag = 1;
-		}else if(checkvalid(name)==1){
-			printlexerror(2);
-			flag = 1;
-		}
-		strcpy(list[lex_index].name, name);
-		list[lex_index].value = 14;
-		lex_index++;
-	}else if(strcmp(word, "read")){
+	}else if(strcmp(word, "read") == 0){
 		list[lex_index].type = readsym;
 		strcpy(list[lex_index].name, "read");
 		list[lex_index].value = 13;
 		lex_index++;
-		list[lex_index].type = identsym;
-		char* name = wordRunner(input);
-		if(name == NULL){
-			printlexerror(4);
-			flag = 1;
-		}else if(checkvalid(name)==1){
-			printlexerror(2);
-			flag = 1;
-		}
-		strcpy(list[lex_index].name, name);
-		list[lex_index].value = 14;
-		lex_index++;
-	}else if(strcmp(word, "odd")){
+	}else if(strcmp(word, "odd") == 0){
 		list[lex_index].type = oddsym;
 		strcpy(list[lex_index].name, "odd");
 		list[lex_index].value = 28;
@@ -258,31 +217,40 @@ char* wordcheck(char *input){
 			strcpy(list[lex_index].name, word);
 			list[lex_index].value = 14;
 			lex_index++;
+			addtovarlist(word);
+		}else if(checkvalid(word) == 2){
+			list[lex_index].type = identsym;
+			strcpy(list[lex_index].name, word);
+			list[lex_index].value = 14;
+			lex_index++;
 		}
 	}
 
 }
 
 //function to get a number out of the input
-char* getnum(char* input){
+int getnum(char* input){
 	//start at count
 	int initial = count;
 	//find the length of the count
 	while(isdigit(input[count])){
 		count++;
 	}
-	char str[count-initial];
+	char* str = malloc(sizeof(char)* (count-initial));
 	//if the length of the digit is short enough count it and return it
 	if(count-initial < MAX_NUMBER_LEN){
 		for(int i = 0; i< count-initial; i++){
 			str[i] = input[initial+i];
 		}
-		return (char*) str;
+		if(isalpha(input[count+1]) != 0){
+			printlexerror(2);
+			flag = 1;
+			return 0;
+		}
+		return atoi(str);
 	}
-	//if the word is too long print error, and set flag
-	printlexerror(3);
-	flag = 1;
-	return NULL;
+	//if the word is too long return an impossible value
+	return -1;
 	
 }
 
@@ -290,22 +258,30 @@ lexeme *lexanalyzer(char *input){
 	lex_index = 0;//set the list counter to the begining
 	count = 0;//set the input counter to the begining
 	flag = 0;//set the flag to no error(1-error, 0-noerror)
+	varCount = 0;
+	list = calloc(sizeof(lexeme), MAX_NUMBER_TOKENS);
 	//iterably loop through the input array
+	
 	while(input[count] != '\0'){
+		//printf("Loop count: %d, current char: %c\n", count, input[count]);
 		//check if its a control character and skip it
 		if(iscntrl(input[count])){
 			count++;
 		//check if its a number and count it
-		}else if(isdigit(input[count])){
-			list[lex_index].type = semicolonsym;
-			strcpy(list[lex_index].name, getnum(input));
-			list[lex_index].value = 15;
+		}else if(isdigit(input[count])!=0){
+			int temp = getnum(input);
+			if(temp == -1){
+				flag = 1;
+				printlexerror(3);
+			}
+			list[lex_index].type = numbersym;
+			//strcpy(list[lex_index].name, temp);
+			list[lex_index].value = temp;
 			lex_index++;
-			count++;
 		//check if its an alphabet character and check for word
-		}else if(isalpha(input[count])){
-			wordcheck(&input[count]);
-			count++;
+		}else if(isalpha(input[count]) != 0){
+			wordcheck(input);
+
 		//check if its one of the char operators
 		}else{
 			switch(input[count]){
@@ -345,138 +321,110 @@ lexeme *lexanalyzer(char *input){
 					count++;
 					break;
 				case '>':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||numbersym)){
+					if(input[count+1] == '=' ){
 						list[lex_index].type = geqsym;
 						strcpy(list[lex_index].name, ">=");
 						list[lex_index].value = 27;
 						lex_index++;
-						count++;
-					}else if(list[lex_index-1].type == identsym||numbersym){
+						count+=2;
+					}else{
 						list[lex_index].type = gtrsym;
 						strcpy(list[lex_index].name, ">");
 						list[lex_index].value = 26;
 						lex_index++;
 						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
 					}
 					break;
 				case '<':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||numbersym)){
+					if(input[count+1] == '='){
 						list[lex_index].type = leqsym;
 						strcpy(list[lex_index].name, "<=");
 						list[lex_index].value = 25;
 						lex_index++;
-						count++;
-					}else if(list[lex_index-1].type == identsym||numbersym){
+						count+=2;
+					}else{
 						list[lex_index].type = lsssym;
 						strcpy(list[lex_index].name, "<");
 						list[lex_index].value = 24;
 						lex_index++;
 						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
 					}
 					break;
 				case '!':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||numbersym)){
-						list[lex_index].type = leqsym;
+					if(input[count+1] == '='){
+						list[lex_index].type = neqsym;
 						strcpy(list[lex_index].name, "!=");
 						list[lex_index].value = 23;
 						lex_index++;
-						count++;
+						count+=2;
 					}else{
-						printlexerror(6);
+						printlexerror(1);
 						flag = 1;
 					}
 					break;
 				case '=':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||numbersym)){
-						list[lex_index].type = leqsym;
+					if(input[count+1] == '='){
+						list[lex_index].type = eqlsym;
 						strcpy(list[lex_index].name, "==");
 						list[lex_index].value = 22;
 						lex_index++;
-						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
+						count+=2;
 					}
 					break;
 				case '%':
-					if(list[lex_index-1].type == identsym||numbersym){
-						list[lex_index].type = modsym;
-						strcpy(list[lex_index].name, "%");
-						list[lex_index].value = 21;
-						lex_index++;
-						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
-					}
+					list[lex_index].type = modsym;
+					strcpy(list[lex_index].name, "%");
+					list[lex_index].value = 21;
+					lex_index++;
+					count++;
 					break;
 				case '/':
 					if(input[count+1] == '/'){
 						//call function to run to the next newline character
-					}else if(list[lex_index-1].type == identsym||numbersym){
+						runtonewline(input);
+					}else{
 						list[lex_index].type = divsym;
 						strcpy(list[lex_index].name, "/");
 						list[lex_index].value = 20;
 						lex_index++;
 						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
 					}
 					break;
 				case '*':
-					if(list[lex_index-1].type == identsym||numbersym){
-						list[lex_index].type = modsym;
-						strcpy(list[lex_index].name, "*");
-						list[lex_index].value = 19;
-						lex_index++;
-						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
-					}
+					list[lex_index].type = multsym;
+					strcpy(list[lex_index].name, "*");
+					list[lex_index].value = 19;
+					lex_index++;
+					count++;
 					break;
 				case '-':
-					if(list[lex_index-1].type == identsym||numbersym){
-						list[lex_index].type = modsym;
-						strcpy(list[lex_index].name, "-");
-						list[lex_index].value = 18;
-						lex_index++;
-						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
-					}
+					list[lex_index].type = subsym;
+					strcpy(list[lex_index].name, "-");
+					list[lex_index].value = 18;
+					lex_index++;
+					count++;
 					break;
 				case '+':
-					if(list[lex_index-1].type == identsym||numbersym){
-						list[lex_index].type = modsym;
-						strcpy(list[lex_index].name, "+");
-						list[lex_index].value = 17;
-						lex_index++;
-						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
-					}
+					list[lex_index].type = addsym;
+					strcpy(list[lex_index].name, "+");
+					list[lex_index].value = 17;
+					lex_index++;
+					count++;
 					break;
 				case ':':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||numbersym)){
-						list[lex_index].type = leqsym;
+					if(input[count+1] == '='){
+						list[lex_index].type = assignsym;
 						strcpy(list[lex_index].name, ":=");
 						list[lex_index].value = 16;
 						lex_index++;
-						count++;
+						count+=2;
 					}else{
 						printlexerror(6);
 						flag = 1;
 					}
+					break;
+				case ' ':
+					cutwhite(input);
 					break;
 			}
 		}
