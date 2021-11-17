@@ -107,7 +107,7 @@ char* wordRunner(char *input){
 	int wordlen = 0;
 	int wcount = count;
 	//find how long the word is based on if it detects an alphabet character
-	while(isalpha(input[count])){
+	while(isalpha(input[count]) != 0 || isdigit(input[count])){
 		wordlen++;
 		count++;
 		
@@ -394,132 +394,95 @@ lexeme *lexanalyzer(char *input){
 					count++;
 					break;
 				case '>':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym)){
+					if(input[count+1] == '=' ){
 						list[lex_index].type = geqsym;
 						strcpy(list[lex_index].name, ">=");
 						list[lex_index].value = 27;
 						lex_index++;
 						count+=2;
-					}else if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
+					}else{
 						list[lex_index].type = gtrsym;
 						strcpy(list[lex_index].name, ">");
 						list[lex_index].value = 26;
 						lex_index++;
 						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
 					}
 					break;
 				case '<':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym)){
+					if(input[count+1] == '='){
 						list[lex_index].type = leqsym;
 						strcpy(list[lex_index].name, "<=");
 						list[lex_index].value = 25;
 						lex_index++;
 						count+=2;
-					}else if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
+					}else{
 						list[lex_index].type = lsssym;
 						strcpy(list[lex_index].name, "<");
 						list[lex_index].value = 24;
 						lex_index++;
 						count++;
-					}else{
-						
-						printlexerror(6);
-						flag = 1;
 					}
 					break;
 				case '!':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym)){
+					if(input[count+1] == '='){
 						list[lex_index].type = neqsym;
 						strcpy(list[lex_index].name, "!=");
 						list[lex_index].value = 23;
 						lex_index++;
 						count+=2;
-					}else{
-						
-						printlexerror(6);
-						flag = 1;
 					}
 					break;
 				case '=':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym)){
+					if(input[count+1] == '='){
 						list[lex_index].type = eqlsym;
 						strcpy(list[lex_index].name, "==");
 						list[lex_index].value = 22;
 						lex_index++;
 						count+=2;
-					}else{
-						printlexerror(6);
-						flag = 1;
 					}
 					break;
 				case '%':
-					if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
-						list[lex_index].type = modsym;
-						strcpy(list[lex_index].name, "%");
-						list[lex_index].value = 21;
-						lex_index++;
-						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
-					}
+					list[lex_index].type = modsym;
+					strcpy(list[lex_index].name, "%");
+					list[lex_index].value = 21;
+					lex_index++;
+					count++;
 					break;
 				case '/':
 					if(input[count+1] == '/'){
 						//call function to run to the next newline character
 						runtonewline(input);
-					}else if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
+					}else{
 						list[lex_index].type = divsym;
 						strcpy(list[lex_index].name, "/");
 						list[lex_index].value = 20;
 						lex_index++;
 						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
 					}
 					break;
 				case '*':
-					if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
-						list[lex_index].type = multsym;
-						strcpy(list[lex_index].name, "*");
-						list[lex_index].value = 19;
-						lex_index++;
-						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
-					}
+					list[lex_index].type = multsym;
+					strcpy(list[lex_index].name, "*");
+					list[lex_index].value = 19;
+					lex_index++;
+					count++;
 					break;
 				case '-':
-					if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
-						list[lex_index].type = subsym;
-						strcpy(list[lex_index].name, "-");
-						list[lex_index].value = 18;
-						lex_index++;
-						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
-					}
+					list[lex_index].type = subsym;
+					strcpy(list[lex_index].name, "-");
+					list[lex_index].value = 18;
+					lex_index++;
+					count++;
 					break;
 				case '+':
-					if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
-						list[lex_index].type = addsym;
-						strcpy(list[lex_index].name, "+");
-						list[lex_index].value = 17;
-						lex_index++;
-						count++;
-					}else{
-						printlexerror(6);
-						flag = 1;
-					}
+					list[lex_index].type = addsym;
+					strcpy(list[lex_index].name, "+");
+					list[lex_index].value = 17;
+					lex_index++;
+					count++;
 					break;
 				case ':':
-					if(input[count+1] == '=' && (list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym)){
+					if(input[count+1] == '='){
 						list[lex_index].type = assignsym;
 						strcpy(list[lex_index].name, ":=");
 						list[lex_index].value = 16;
