@@ -76,9 +76,9 @@ int checkvalid(char* word){
 		//checks if the variable name has been used, if so it returns that its valid
 		for(int i = 0; i < MAX_NUMBER_TOKENS; i++){
 			if(varnames[i]==NULL){
-				break;
+				continue;
 			}else if(strcmp(word, varnames[i]) == 0){
-				return 1;
+				return 2;
 			}
 		}
 	}
@@ -278,6 +278,8 @@ void wordcheck(char *input){
 			strcpy(list[lex_index].name, word);
 			list[lex_index].value = 14;
 			lex_index++;
+		}else if(checkvalid(word) == 2){
+			
 		}
 	}
 
@@ -320,7 +322,7 @@ lexeme *lexanalyzer(char *input){
 		if(iscntrl(input[count])){
 			count++;
 		//check if its a number and count it
-		}else if(isdigit(input[count])==1){
+		}else if(isdigit(input[count])!=0){
 			list[lex_index].type = semicolonsym;
 			strcpy(list[lex_index].name, getnum(input));
 			list[lex_index].value = 15;
@@ -374,7 +376,7 @@ lexeme *lexanalyzer(char *input){
 						strcpy(list[lex_index].name, ">=");
 						list[lex_index].value = 27;
 						lex_index++;
-						count++;
+						count+=2;
 					}else if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
 						list[lex_index].type = gtrsym;
 						strcpy(list[lex_index].name, ">");
@@ -382,6 +384,7 @@ lexeme *lexanalyzer(char *input){
 						lex_index++;
 						count++;
 					}else{
+
 						printlexerror(6);
 						flag = 1;
 					}
@@ -392,7 +395,7 @@ lexeme *lexanalyzer(char *input){
 						strcpy(list[lex_index].name, "<=");
 						list[lex_index].value = 25;
 						lex_index++;
-						count++;
+						count+=2;
 					}else if(list[lex_index-1].type == identsym||list[lex_index-1].type == numbersym){
 						list[lex_index].type = lsssym;
 						strcpy(list[lex_index].name, "<");
@@ -400,6 +403,7 @@ lexeme *lexanalyzer(char *input){
 						lex_index++;
 						count++;
 					}else{
+						
 						printlexerror(6);
 						flag = 1;
 					}
@@ -410,8 +414,9 @@ lexeme *lexanalyzer(char *input){
 						strcpy(list[lex_index].name, "!=");
 						list[lex_index].value = 23;
 						lex_index++;
-						count++;
+						count+=2;
 					}else{
+						
 						printlexerror(6);
 						flag = 1;
 					}
@@ -422,8 +427,10 @@ lexeme *lexanalyzer(char *input){
 						strcpy(list[lex_index].name, "==");
 						list[lex_index].value = 22;
 						lex_index++;
-						count++;
+						count+=2;
 					}else{
+						printf("%c %c %c %c", input[count-3], input[count-2], input[count-1], input[count]);
+						sleep(2);
 						printlexerror(6);
 						flag = 1;
 					}
@@ -497,7 +504,7 @@ lexeme *lexanalyzer(char *input){
 						strcpy(list[lex_index].name, ":=");
 						list[lex_index].value = 16;
 						lex_index++;
-						count++;
+						count+=2;
 					}else{
 						printlexerror(6);
 						flag = 1;
