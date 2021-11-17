@@ -57,19 +57,17 @@ int checkvalid(char* word){
 		return 1;
 	}else if(strcmp(word, "procedure") == 0){
 		return 1;
-	}else if(strcmp(word, "begin") == 0){
+	}else if(strcmp(word, "do") == 0){
 		return 1;
-	}else if(strcmp(word, "end") == 0){
+	}else if(strcmp(word, "od") == 0){
 		return 1;
 	}else if(strcmp(word, "while") == 0){
 		return 1;
 	}else if(strcmp(word, "do") == 0){
 		return 1;
-	}else if(strcmp(word, "if") == 0){
+	}else if(strcmp(word, "when") == 0){
 		return 1;
-	}else if(strcmp(word, "then") == 0){
-		return 1;
-	}else if(strcmp(word, "else") == 0){
+	}else if(strcmp(word, "elsedo") == 0){
 		return 1;
 	}else if(strcmp(word, "call") == 0){
 		return 1;
@@ -156,14 +154,14 @@ void wordcheck(char *input){
 		strcpy(list[lex_index].name, "procedure");
 		list[lex_index].value = 3;
 		lex_index++;
-	}else if(strcmp(word, "begin") == 0){
-		list[lex_index].type = beginsym;
-		strcpy(list[lex_index].name, "begin");
+	}else if(strcmp(word, "do") == 0){
+		list[lex_index].type = dosym;
+		strcpy(list[lex_index].name, "do");
 		list[lex_index].value = 4;
 		lex_index++;
-	}else if(strcmp(word, "end") == 0){
-		list[lex_index].type = endsym;
-		strcpy(list[lex_index].name, "end");
+	}else if(strcmp(word, "od") == 0){
+		list[lex_index].type = odsym;
+		strcpy(list[lex_index].name, "od");
 		list[lex_index].value = 5;
 		lex_index++;
 	}else if(strcmp(word, "while") == 0){
@@ -176,19 +174,14 @@ void wordcheck(char *input){
 		strcpy(list[lex_index].name, "do");
 		list[lex_index].value = 7;
 		lex_index++;
-	}else if(strcmp(word, "if") == 0){
-		list[lex_index].type = ifsym;
-		strcpy(list[lex_index].name, "if");
+	}else if(strcmp(word, "when") == 0){
+		list[lex_index].type = whensym;
+		strcpy(list[lex_index].name, "when");
 		list[lex_index].value = 8;
 		lex_index++;
-	}else if(strcmp(word, "then") == 0){
-		list[lex_index].type = thensym;
-		strcpy(list[lex_index].name, "then");
-		list[lex_index].value = 9;
-		lex_index++;
-	}else if(strcmp(word, "else") == 0){
-		list[lex_index].type = elsesym;
-		strcpy(list[lex_index].name, "else");
+	}else if(strcmp(word, "elsedo") == 0){
+		list[lex_index].type = elsedosym;
+		strcpy(list[lex_index].name, "elsedo");
 		list[lex_index].value = 10;
 		lex_index++;
 	}else if(strcmp(word, "call") == 0){
@@ -254,9 +247,9 @@ int getnum(char* input){
 	
 }
 
-lexeme *lexanalyzer(char *input){
-	lex_index = 0;//set the list counter to the begining
-	count = 0;//set the input counter to the begining
+lexeme *lexanalyzer(char *input, int printFlag){
+	lex_index = 0;//set the list counter to the doing
+	count = 0;//set the input counter to the doing
 	flag = 0;//set the flag to no error(1-error, 0-noerror)
 	varCount = 0;
 	list = calloc(sizeof(lexeme), MAX_NUMBER_TOKENS);
@@ -435,8 +428,10 @@ lexeme *lexanalyzer(char *input){
 	
 	}
 	
+	if(printFlag != 0){
+		printtokens();
+	}
 	
-	printtokens();
 	return list;
 }
 
@@ -504,26 +499,20 @@ void printtokens()
 			case assignsym:
 				printf("%11s\t%d", ":=", assignsym);
 				break;
-			case beginsym:
-				printf("%11s\t%d", "begin", beginsym);
+			case dosym:
+				printf("%11s\t%d", "do", dosym);
 				break;
-			case endsym:
-				printf("%11s\t%d", "end", endsym);
+			case odsym:
+				printf("%11s\t%d", "od", odsym);
 				break;
-			case ifsym:
-				printf("%11s\t%d", "if", ifsym);
+			case whensym:
+				printf("%11s\t%d", "when", whensym);
 				break;
-			case thensym:
-				printf("%11s\t%d", "then", thensym);
-				break;
-			case elsesym:
-				printf("%11s\t%d", "else", elsesym);
+			case elsedosym:
+				printf("%11s\t%d", "elsedo", elsedosym);
 				break;
 			case whilesym:
 				printf("%11s\t%d", "while", whilesym);
-				break;
-			case dosym:
-				printf("%11s\t%d", "do", dosym);
 				break;
 			case callsym:
 				printf("%11s\t%d", "call", callsym);
