@@ -31,6 +31,15 @@ char* wordcheck(char* input);
 void cutwhite(char* input);
 int checkvalid(char* word);
 char* getnum(char* input);
+void runtonewline(char* input);
+
+
+//run to new line
+void runtonewline(char* input){
+	while(!iscntrl(input[count])){
+		count++;
+	}
+}
 
 //checks if a word is not reserved
 int checkvalid(char* word){
@@ -291,7 +300,10 @@ lexeme *lexanalyzer(char *input){
 	count = 0;//set the input counter to the begining
 	flag = 0;//set the flag to no error(1-error, 0-noerror)
 	//iterably loop through the input array
+	
 	while(input[count] != '\0'){
+		printf("loop count: %d\n", count);
+		printf("%c", input[count]);
 		//check if its a control character and skip it
 		if(iscntrl(input[count])){
 			count++;
@@ -419,6 +431,7 @@ lexeme *lexanalyzer(char *input){
 				case '/':
 					if(input[count+1] == '/'){
 						//call function to run to the next newline character
+						runtonewline(input);
 					}else if(list[lex_index-1].type == identsym||numbersym){
 						list[lex_index].type = divsym;
 						strcpy(list[lex_index].name, "/");
