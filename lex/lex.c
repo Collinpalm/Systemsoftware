@@ -336,11 +336,9 @@ lexeme *lexanalyzer(char *input){
 			strcpy(list[lex_index].name, getnum(input));
 			list[lex_index].value = 15;
 			lex_index++;
-			count++;
 		//check if its an alphabet character and check for word
 		}else if(isalpha(input[count]) != 0){
 			wordcheck(input);
-			count++;
 			printf("%c", input[count]);
 		//check if its one of the char operators
 		}else{
