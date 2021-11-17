@@ -359,6 +359,7 @@ lexeme *lexanalyzer(char *input){
 						count+=2;
 					}else{
 						printlexerror(1);
+						flag = 1;
 					}
 					break;
 				case '=':
