@@ -439,7 +439,6 @@ void block(lexeme *list){
 	const_dec(list);
 	int x = var_dec(list);
 	proc_dec(list);
-	printf("\n%d  %d", procedureIndex, cIndex);
 	table[procedureIndex].addr = cIndex*3;
 	if (level == 0){
 		emit(6,0,x);
@@ -465,10 +464,8 @@ void program(lexeme *list){
 	for(int i = 0;i < cIndex;i++){
 		if(code[i].opcode == 5){
 			code[i].m = table[code[i].m].addr;
-			printf("  %d\n", code[i].m);
 		}
 	}
-	printf("  %d\n", table[0].addr);
 	code[0].m = table[0].addr;
 }
 

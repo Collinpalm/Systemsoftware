@@ -60,14 +60,12 @@ void execute_program(instruction* code, int printFlag) {
 	//set up boilerplate output
 	if(printFlag != 0){
 		printf("\n            \t\tPC\tBP\tSP\tDP\tdata\n");
-		printf("Initial values\t\t%d\t%d\t%d\t%d		\n", PC, BP, SP, DP);
+		printf("Initial values:\t\t%d\t%d\t%d\t%d		\n", PC, BP, SP, DP);
 	}
 	
 	
 	while (Halt == 0) {
-		if(printFlag != 0){
-			printf("\n%d %d", PC, pas[PC]);
-		}
+
 		
 		// Fetch
 		IR.OP = pas[PC];
