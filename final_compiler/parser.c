@@ -375,7 +375,7 @@ int var_dec(lexeme *list){
 			if(level==0){
 				addToSymbolTable(2, list[lIndex].name, 0, level, numVars-1, 0);
 			}else{
-				addToSymbolTable(2, list[lIndex].name, 0, level, numVars+2, 0);
+				addToSymbolTable(2, list[lIndex].name, 0, level, numVars+3, 0);
 			}
 			lIndex++;
 		}while (list[lIndex].type == commasym);
@@ -439,6 +439,7 @@ void block(lexeme *list){
 	const_dec(list);
 	int x = var_dec(list);
 	proc_dec(list);
+	printf("\n%d  %d", procedureIndex, cIndex);
 	table[procedureIndex].addr = cIndex*3;
 	if (level == 0){
 		emit(6,0,x);
@@ -463,9 +464,11 @@ void program(lexeme *list){
 	
 	for(int i = 0;i < cIndex;i++){
 		if(code[i].opcode == 5){
-			code[i].m = table[0].addr;
+			code[i].m = table[code[i].m].addr;
+			printf("  %d\n", code[i].m);
 		}
 	}
+	printf("  %d\n", table[0].addr);
 	code[0].m = table[0].addr;
 }
 

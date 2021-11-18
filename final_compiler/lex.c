@@ -356,13 +356,11 @@ lexeme *lexanalyzer(char *input, int printFlag){
 					}
 					break;
 				case '=':
-					if(input[count+1] == '='){
 						list[lex_index].type = eqlsym;
-						strcpy(list[lex_index].name, "==");
+						strcpy(list[lex_index].name, "=");
 						list[lex_index].value = 22;
 						lex_index++;
 						count+=2;
-					}
 					break;
 				case '%':
 					list[lex_index].type = modsym;

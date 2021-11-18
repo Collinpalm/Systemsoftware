@@ -12,7 +12,7 @@ PROFESSOR= EURIPIDES MONTAGNE
 #include <unistd.h>
 #include "compiler.h"
 
-#define MAX_PAS_LENGTH 500
+#define MAX_PAS_LENGTH 3000
 
 typedef struct Instruction Instruction;
 
@@ -410,7 +410,7 @@ int base(int L, int BP, int pas[]) {
 	int arb = BP;
 
 	while (L > 0) {
-		arb = pas[arb];
+		arb = pas[arb-1];
 		L--;
 	}
 
