@@ -235,7 +235,7 @@ int getnum(char* input){
 		for(int i = 0; i< count-initial; i++){
 			str[i] = input[initial+i];
 		}
-		if(isalpha(input[count+1]) != 0){
+		if(isalpha(input[count]) != 0){
 			printlexerror(2);
 			flag = 1;
 			return 0;

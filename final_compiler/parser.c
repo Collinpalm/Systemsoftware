@@ -539,7 +539,7 @@ void printparseerror(int err_code)
 			printf("Parser Error: call must be followed by a procedure identifier\n");
 			break;
 		case 8:
-			printf("Parser Error: if must be followed by then\n");
+			printf("Parser Error: when must be followed by do\n");
 			break;
 		case 9:
 			printf("Parser Error: while must be followed by do\n");
@@ -560,10 +560,10 @@ void printparseerror(int err_code)
 			printf("Parser Error: Symbol declarations should close with a semicolon\n");
 			break;
 		case 15:
-			printf("Parser Error: Statements within begin-end must be separated by a semicolon\n");
+			printf("Parser Error: Statements within do-od must be separated by a semicolon\n");
 			break;
 		case 16:
-			printf("Parser Error: begin must be followed by end\n");
+			printf("Parser Error: do must be followed by od\n");
 			break;
 		case 17:
 			printf("Parser Error: Bad arithmetic\n");

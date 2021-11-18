@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "compiler.h"
 
 #define MAX_CODE_LENGTH 3000
@@ -57,14 +58,14 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 	}
-	
+
 	list = lexanalyzer(input, tokens);
 	if (list == NULL)
 	{
 		free(input);
 		return 0;
 	}
-	
+
 	code = parse(list, symbols, codes);
 	if (code == NULL)
 	{
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
 	 	free(list);
 	 	return 0;
 	}
-	
+
 	execute_program(code, outputs);
 	
 	free(input);
