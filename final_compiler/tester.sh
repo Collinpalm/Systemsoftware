@@ -10,7 +10,7 @@ fi
 echo "Compiles"
 
 echo -n "Test : "
-./a.out test.txt -a -s -v
+./a.out test.txt -a -s -v -l
 executed=$?
 if [[ $executed !=  0 ]]; then
 	echo ":'("

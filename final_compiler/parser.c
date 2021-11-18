@@ -463,7 +463,7 @@ void program(lexeme *list){
 	
 	for(int i = 0;i < cIndex;i++){
 		if(code[i].opcode == 5){
-			code[i].m = table[code[i].m].addr;
+			code[i].m = table[0].addr;
 		}
 	}
 	code[0].m = table[0].addr;
