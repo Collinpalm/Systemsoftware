@@ -1,45 +1,15 @@
-const halt := 0, tip := 1, total := 2;
-var action, d, c, t, per;
-procedure findtip;
-	procedure takeper;
-		var round;
-		do
-			t := t * per;
-			round := (t % 100) / 10;
-			t := t /100;
-			when round >= 5 do
-				t := t + 1;
-		od;
-	do
-		t := 100 * d + c;
-		call takeper;
-		d := t/100;
-		c := t % 100;
-	od;
-procedure findtotal;
-	var tempd, tempc;
-	do
-		tempd := d;
-		tempc := c;
-		call findtip;
-		d := tempd + d;
-		c := tempc + c;
-		when c >= 100 do
-			do
-				d := d + c/100;
-				c := c%100;
-			od;
-	od;
+var f, n;
+procedure fact;
+var ans1;
 do
-	read action;
-	while action != halt do
-		do
-			read d; read c; read per;
-			when odd action do
-				call findtip;
-			elsedo
-				call findtotal;
-			write d; write c;
-			read action;
-		od;
+ ans1:=n;
+ n:= n-1;
+ when n = 0 do f := 1;
+ when n > 0 do call fact;
+ f:=f*ans1;
+od;
+do
+     n:=3;
+     call fact;
+     write f
 od.

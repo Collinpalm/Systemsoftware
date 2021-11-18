@@ -447,7 +447,7 @@ void printtokens()
 				printf("%11s\t%d", "odd", oddsym);
 				break;
 			case eqlsym:
-				printf("%11s\t%d", "==", eqlsym);
+				printf("%11s\t%d", "=", eqlsym);
 				break;
 			case neqsym:
 				printf("%11s\t%d", "!=", neqsym);

@@ -9,6 +9,7 @@ Assignment 3
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "compiler.h"
 
 #define MAX_CODE_LENGTH 1000
@@ -41,8 +42,21 @@ void proc_dec(lexeme *list);
 int var_dec(lexeme *list);
 void const_dec(lexeme *list);
 void block(lexeme *list);
+int checkifdoreq(lexeme *list);
 
 
+//function to see if od is required
+int checkifodreq(lexeme*list){
+	for(int i = lIndex; i >=0; i--){
+		if(list[i].type == whensym || list[i].type == whilesym){
+			return 1;
+			printf("no od");
+		}
+	}
+	printf("od req");
+	sleep(2);
+	return 0;
+}
 
 //function to find the exising symbol in the table and return its position
 
@@ -240,6 +254,7 @@ void statement(lexeme *list){
 				printparseerror(15);
 				exit(0);
 			}else{
+
 				printparseerror(16);
 				exit(0);
 			}
