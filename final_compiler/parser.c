@@ -20,6 +20,8 @@ symbol *table;
 int tIndex;
 int level;
 int lIndex;
+int noOdNeeded;  //this is an int flag to tell the parser that its ok if do is not followed by od bc do has 3 uses now, super annoying
+//but basically this int gets set to 1 whenever a while or when is called and then set back to 0 when od is finished calling
 //function prototypes because they all call on each other
 void emit(int opname, int level, int mvalue);
 void addToSymbolTable(int k, char n[], int v, int l, int a, int m);
